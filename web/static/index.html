@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小律提案 · Bill Machine</title>
+<style>
+:root{--sidebar-w:220px;--sidebar-bg:#0f172a;--sidebar-hover:#1e293b;--sidebar-active:#2563eb;--surface:#fff;--bg:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--text-secondary:#64748b;--blue:#2563eb;--teal:#14b8a6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.06);--font:system-ui,-apple-system,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;display:flex;min-height:100vh}
+button{cursor:pointer;font-family:inherit}
+input,textarea,select{font-family:inherit}
+
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:90;display:none;pointer-events:none}
+.sidebar-overlay.visible{display:block;pointer-events:auto}
+
+.sidebar{position:fixed;top:0;left:0;z-index:95;width:var(--sidebar-w);height:100vh;background:var(--sidebar-bg);color:rgba(255,255,255,.85);display:none;flex-direction:column}
+.sidebar.open{display:flex}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:20px 16px 24px;font-size:18px;font-weight:800;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar-brand .icon{width:30px;height:30px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0}
+.sidebar-nav{display:flex;flex-direction:column;padding:12px 8px;gap:2px;flex:1}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:8px;font-size:14px;font-weight:500;color:rgba(255,255,255,.65);border:none;background:transparent;text-align:left;transition:all .1s}
+.sidebar-item:hover{background:var(--sidebar-hover);color:#fff}
+.sidebar-item.active{background:var(--sidebar-active);color:#fff;font-weight:600}
+.sidebar-item .emoji{font-size:16px;width:24px;text-align:center;flex-shrink:0}
+.sidebar-divider{border:none;border-top:1px solid rgba(255,255,255,.08);margin:6px 12px}
+.sidebar-footer{padding:12px 10px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:6px}
+.sidebar-footer select{padding:5px 8px;border-radius:6px;font-size:11px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.12);width:100%}
+.sidebar-footer select option{background:var(--sidebar-bg);color:#fff}
+
+.main{flex:1;overflow-y:auto;min-width:0;position:relative;z-index:5}
+.dash-card{position:relative;z-index:15}
+.main-header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+.main-header h2{font-size:18px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.main-header .model-tag{font-size:12px;color:var(--text-secondary);background:var(--bg);padding:4px 10px;border-radius:6px;white-space:nowrap}
+.main-content{padding:24px 28px;max-width:1040px}
+
+.agent-panel{display:none}
+.agent-panel.active{display:block}
+.agent-panel h1{font-size:24px;font-weight:800;margin-bottom:4px}
+.agent-panel .desc{font-size:14px;color:var(--text-secondary);margin-bottom:20px}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.card+.card{margin-top:12px}
+.card-title{font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+.card-action{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px dashed var(--border);border-radius:8px;cursor:pointer;transition:all .1s;margin-bottom:6px;font-size:13px}
+.card-action:hover{border-color:var(--blue);background:#f8faff}
+.card-action .emoji{font-size:15px;width:22px;text-align:center;flex-shrink:0}
+
+.search-row,.dash-search{display:flex;gap:8px;margin-bottom:16px}
+.search-row input,.dash-search input{flex:1;padding:11px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--surface)}
+.search-row input:focus,.dash-search input:focus{outline:2px solid var(--blue);outline-offset:-1px}
+.search-row button,.dash-search button{padding:11px 20px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-weight:600;font-size:13px}
+.search-row button:hover,.dash-search button:hover{opacity:.9}
+
+.step-progress{display:flex;gap:6px;margin-bottom:20px}
+.step-dot{flex:1;height:5px;border-radius:3px;background:#e2e8f0}
+.step-dot.active{background:var(--blue)}
+.step-dot.done{background:#1a1a1a}
+
+.btn{padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;border:none}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{opacity:.9}
+.btn-secondary{background:var(--surface);border:1px solid var(--border);color:var(--text-secondary)}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-teal:hover{opacity:.9}
+.btn-row{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+
+.dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;cursor:pointer;transition:all .12s;box-shadow:var(--shadow)}
+.dash-card:hover{border-color:var(--blue);box-shadow:0 3px 12px rgba(0,0,0,.08);transform:translateY(-1px)}
+.dash-card .dc-icon{width:44px;height:44px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px}
+.dash-card .dc-label{font-size:15px;font-weight:600}
+.dash-card .dc-desc{font-size:12px;color:var(--text-secondary)}
+
+.search-result{padding:12px 14px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .1s;margin-bottom:6px}
+.search-result:hover{border-color:var(--blue)}
+.sr-title{font-weight:600;font-size:14px;margin-bottom:2px}
+.sr-meta{font-size:12px;color:var(--text-secondary);margin-bottom:6px}
+.sr-bar{height:4px;border-radius:3px;background:var(--bg);overflow:hidden}
+.sr-bar-fill{height:100%;border-radius:3px;background:var(--teal);transition:width .3s}
+
+.loading{text-align:center;padding:40px;color:var(--text-secondary)}
+@media(max-width:768px){.main-content{padding:50px 12px 16px}.dash-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="icon">L</div>
+    <span class="brand-text">小律提案</span>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="sidebar-item" data-agent="dashboard"><span class="emoji">🏠</span><span class="label">Dashboard</span></button>
+    <button class="sidebar-item" data-agent="search"><span class="emoji">🔍</span><span class="label">Search</span></button>
+    <button class="sidebar-item" data-agent="generate"><span class="emoji">✎</span><span class="label">Generate</span></button>
+    <button class="sidebar-item" data-agent="analysis"><span class="emoji">📊</span><span class="label">Analysis</span></button>
+    <button class="sidebar-item" data-agent="social"><span class="emoji">📣</span><span class="label">Social Campaign</span></button>
+    <hr class="sidebar-divider">
+    <button class="sidebar-item" data-agent="blackbox"><span class="emoji">📦</span><span class="label">AI Black Box</span></button>
+  </nav>
+  <div class="sidebar-footer">
+    <select id="presetSelect" onchange="switchPreset(this.value)"></select>
+    <select id="langSelect" onchange="switchLang(this.value)"><option value="en">EN</option><option value="zh-Hans">简</option></select>
+  </div>
+</div>
+
+<div class="main">
+  <div class="main-header">
+    <button id="menuBtn" onclick="toggleSidebar()" style="background:none;border:none;font-size:20px;padding:4px 8px;cursor:pointer">☰</button>
+    <h2 id="agentTitle" style="flex:1">Dashboard</h2>
+    <span class="model-tag" id="agentModel"></span>
+  </div>
+  <div class="main-content" id="mainContent">
+
+    <div class="agent-panel active" id="panel-dashboard">
+      <h1 id="dashTitle">小律提案 · Bill Machine</h1>
+      <p class="desc" id="dashDesc">Select an agent to get started.</p>
+      <div class="dash-search"><input type="text" id="dashSearchInput" placeholder="Search..." onkeydown="if(event.key==='Enter')dashSearch()"><button onclick="dashSearch()">Search</button></div>
+      <div id="dashResults" style="margin-bottom:16px"></div>
+      <div class="dash-grid" id="dashGrid">
+        <div class="dash-card" onclick="goAgent('search')"><div class="dc-icon">🔍</div><div class="dc-label">Search</div><div class="dc-desc">Search bills</div></div>
+        <div class="dash-card" onclick="goAgent('generate')"><div class="dc-icon">✎</div><div class="dc-label">Generate</div><div class="dc-desc">Draft proposals</div></div>
+        <div class="dash-card" onclick="goAgent('analysis')"><div class="dc-icon">📊</div><div class="dc-label">Analysis</div><div class="dc-desc">Pass rates</div></div>
+        <div class="dash-card" onclick="goAgent('social')"><div class="dc-icon">📣</div><div class="dc-label">Social Campaign</div><div class="dc-desc">Posts</div></div>
+        <div class="dash-card" onclick="goAgent('blackbox')" style="grid-column:1/-1;max-width:260px;margin:0 auto"><div class="dc-icon">📦</div><div class="dc-label">AI Black Box</div><div class="dc-desc">Raw reasoning</div></div>
+      </div>
+    </div>
+
+    <div class="agent-panel" id="panel-search">
+      <h1 id="sTitle">Find the ground</h1>
+      <p class="desc" id="sDesc">Search across Hong Kong, Macau, and California.</p>
+      <div class="card"><div class="card-title" id="sQueryTitle">Search Query</div>
+        <div class="search-row"><input type="text" id="agentSearchInput" placeholder="Search..." onkeydown="if(event.key==='Enter')agentSearch()"><button onclick="agentSearch()" id="sSearchBtn">Search</button></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <select id="searchJurFilter" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--surface)">
+            <option value="">All jurisdictions</option>
+            <option value="HK">🇭🇰 Hong Kong</option>
+            <option value="MO">🇲🇴 Macau</option>
+            <option value="CA">🇺🇸 California</option>
+          </select>
+        </div>
+      </div>
+      <div id="searchResults"></div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="nextStep()" id="sNextBtn">Next: Generate →</button></div>
+    </div>
+
+    <div class="agent-panel" id="panel-generate">
+      <h1 id="gTitle">Draft your bill</h1>
+      <p class="desc" id="gDesc">Generate a proposal and find support.</p>
+      <div class="step-progress"><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+      <div class="card">
+        <div class="card-title" id="gStepTitle">Step 2 of 4 — Generate</div>
+        <input type="text" id="genTopicInput" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;margin-bottom:8px" placeholder="e.g. Community composting">
+        <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-primary" onclick="doGenerate()" id="gGenBtn">Generate →</button><select id="genStyleSelect" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px"><option value="standard">Standard</option><option value="detailed">Detailed</option><option value="simple">Simple</option></select></div>
+        <div id="genPreview" style="border:1px dashed var(--border);border-radius:8px;padding:14px;min-height:50px;margin-bottom:12px;font-size:13px;color:var(--text-secondary);display:none;line-height:1.6;white-space:pre-wrap"></div>
+        <div id="genLoading" style="display:none;text-align:center;padding:12px;font-size:13px;color:var(--text-secondary)">⏳ Generating...</div>
+        <div class="card-action" onclick="findLegislators()"><span class="emoji">🤝</span> <span>Find legislator to back it</span></div>
+        <div class="card-action" onclick="startPetition()"><span class="emoji">✍️</span> <span>Collect petition signatures</span></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next: Analysis →</button></div>
+    </div>
+
+    <div class="agent-panel" id="panel-analysis">
+      <h1 id="aTitle">Check the odds</h1>
+      <p class="desc" id="aDesc">Enter a bill or search one from the database.</p>
+      <div class="step-progress"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div></div>
+      <div class="card">
+        <div class="card-title" id="aStepTitle">Step 3 of 4 — Analysis</div>
+        <div style="margin-bottom:10px">
+          <input type="text" id="analysisTopicInput" placeholder="Type a topic or paste your bill text..."
+                 style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--surface)"
+                 onkeydown="if(event.key==='Enter')analysisUseTopic()">
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn btn-primary" onclick="analysisUseTopic()" id="aUseBtn">Analyze →</button>
+          </div>
+        </div>
+        <div id="analysisSelected" style="display:none;margin-bottom:10px;padding:10px 12px;border:1px solid var(--blue);border-radius:8px;background:#f8faff">
+          <div style="font-size:12px;color:var(--text-secondary)">📄 Analyzing</div>
+          <div style="font-weight:600;font-size:14px" id="analysisSelectedTitle"></div>
+        </div>
+        <div id="chartPlaceholder" style="border:1px dashed var(--border);border-radius:8px;padding:20px;min-height:80px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text-secondary)">📊 Enter a topic or paste bill text, then analyze</div>
+        <div class="card-action" onclick="loadPassRateAnalysis()" id="aPartyBtn"><span class="emoji">🏛️</span> <span>Analyze party pass rates</span></div>
+        <div class="card-action" onclick="loadOverallPassRate()" id="aOverallBtn"><span class="emoji">📈</span> <span>Overall pass rate</span></div>
+        <div class="card-action" onclick="generateGraph()"><span class="emoji">📊</span> <span>Generate graph</span></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next: Social Campaign →</button></div>
+    </div>
+
+    <div class="agent-panel" id="panel-social">
+      <h1 id="scTitle">Spread the word</h1>
+      <p class="desc" id="scDesc">Draft and publish social campaigns.</p>
+      <div class="step-progress"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
+      <div class="card">
+        <div class="card-title" id="scStepTitle">Step 4 of 4 — Social Campaign</div>
+        <div class="card-action" onclick="alert('Draft social posts (demo)')"><span class="emoji">📝</span><span>Draft social posts</span></div>
+        <div class="card-action" onclick="alert('Schedule & publish (demo)')"><span class="emoji">📅</span><span>Schedule & publish</span></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-teal" onclick="alert('Campaign launched!')">Done ✓</button></div>
+    </div>
+
+    <div class="agent-panel" id="panel-blackbox">
+      <h1 id="bbTitle">AI Black Box</h1>
+      <p class="desc" id="bbDesc">Raw reasoning trace.</p>
+      <div class="card"><div class="card-title">Reasoning Trace</div><div id="bbPlaceholder" style="border:1px dashed var(--border);border-radius:8px;padding:20px;min-height:150px;font-size:12px;font-family:monospace;color:var(--text-secondary);display:flex;align-items:center;justify-content:center">📦 Output here</div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function goAgent(id){switchAgent(id)}
+const STATE={currentAgent:'dashboard',lang:'en',preset:'hackathon',searchResults:[],lastGenTopic:''};
+const AGENTS=[
+  {id:'dashboard',label:'Dashboard',labelZh:'仪表盘',model:''},
+  {id:'search',label:'Search',labelZh:'搜索',model:'Deepseek'},
+  {id:'generate',label:'Generate',labelZh:'生成',model:'Deepseek'},
+  {id:'analysis',label:'Analysis',labelZh:'分析',model:'Deepseek'},
+  {id:'social',label:'Social Campaign',labelZh:'社媒活动',model:'StepFun'},
+  {id:'blackbox',label:'AI Black Box',labelZh:'AI 黑箱',model:'StepFun'}
+];
+const FLOW=['search','generate','analysis','social'];
+
+async function init(){
+  console.log('Leges init started');
+  try{
+    const r=await fetch('/api/presets');const d=await r.json();
+    console.log('Presets loaded:', Object.keys(d.presets).length);
+    const ps=document.getElementById('presetSelect');if(ps){ps.innerHTML='';
+    for(const[k,p]of Object.entries(d.presets)){const o=document.createElement('option');o.value=k;o.text=p.label_en;if(k===d.active)o.selected=true;ps.appendChild(o)}}
+    renderDashGrid();
+    console.log('Init complete');
+  }catch(e){console.warn('Init error:',e);try{renderDashGrid()}catch(e2){console.warn('Fallback failed:',e2)}}
+}
+function renderDashGrid(){
+  const zh=STATE.lang==='zh-Hans';
+  const grid=document.getElementById('dashGrid');
+  if(!grid)return;
+  const labels=[
+    {label:zh?'搜索':'Search',desc:zh?'搜索法案与先例':'Search bills'},
+    {label:zh?'生成':'Generate',desc:zh?'起草提案':'Draft proposals'},
+    {label:zh?'分析':'Analysis',desc:zh?'通过率分析':'Pass rates'},
+    {label:zh?'社媒活动':'Social Campaign',desc:zh?'社媒发布':'Posts & publish'},
+    {label:zh?'AI 黑箱':'AI Black Box',desc:zh?'推理追踪':'Raw reasoning'}
+  ];
+  grid.querySelectorAll('.dash-card').forEach((card,i)=>{
+    if(labels[i]){const l=card.querySelector('.dc-label');if(l)l.textContent=labels[i].label;const d=card.querySelector('.dc-desc');if(d)d.textContent=labels[i].desc}
+  });
+}
+
+function switchAgent(id){
+  STATE.currentAgent=id;
+  document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.toggle('active',e.dataset.agent===id));
+  document.querySelectorAll('.agent-panel').forEach(e=>e.classList.toggle('active',e.id==='panel-'+id));
+  const a=AGENTS.find(x=>x.id===id);
+  if(a){document.getElementById('agentTitle').textContent=STATE.lang==='zh-Hans'?a.labelZh:a.label;
+  document.getElementById('agentModel').textContent=a.model?(STATE.lang==='zh-Hans'?'模型：'+a.model:'Model: '+a.model):''}
+  // Pre-fill analysis topic from last generated bill
+  if(id==='analysis' && STATE.lastGenTopic){
+    document.getElementById('analysisTopicInput').value=STATE.lastGenTopic;
+  }
+}
+
+document.querySelectorAll('.sidebar-item').forEach(el=>{el.addEventListener('click',()=>{switchAgent(el.dataset.agent);toggleSidebar()})});
+function nextStep(){const i=FLOW.indexOf(STATE.currentAgent);if(i>=0&&i<FLOW.length-1)switchAgent(FLOW[i+1])}
+function prevStep(){const i=FLOW.indexOf(STATE.currentAgent);if(i>0)switchAgent(FLOW[i-1])}
+
+function toggleSidebar(){
+  const sidebar=document.getElementById('sidebar');
+  const isOpen=sidebar.classList.contains('open');
+  if(isOpen){sidebar.classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('visible')}
+  else{sidebar.classList.add('open');document.getElementById('sidebarOverlay').classList.add('visible')}
+  document.getElementById('menuBtn').textContent=isOpen?'☰':'✕';
+}
+
+function switchLang(code){
+  STATE.lang=code;document.documentElement.lang=code==='zh-Hans'?'zh':'en';
+  const zh=code==='zh-Hans';
+  AGENTS.forEach(a=>{const el=document.querySelector('.sidebar-item[data-agent="'+a.id+'"] .label');if(el)el.textContent=zh?a.labelZh:a.label});
+  const cur=AGENTS.find(x=>x.id===STATE.currentAgent);
+  if(cur){document.getElementById('agentTitle').textContent=zh?cur.labelZh:cur.label;document.getElementById('agentModel').textContent=cur.model?(zh?'模型：'+cur.model:'Model: '+cur.model):''}
+  document.querySelector('.brand-text').textContent=zh?'小律提案':'Bill Machine';
+  document.getElementById('dashTitle').textContent=zh?'小律提案 · 法案机器':'小律提案 · Bill Machine';
+  document.getElementById('dashDesc').textContent=zh?'选择一个 Agent 开始。':'Select an agent to get started.';
+  const dashSi=document.getElementById('dashSearchInput');if(dashSi)dashSi.placeholder=zh?'搜索...':'Search...';
+  const si=document.getElementById('agentSearchInput');if(si)si.placeholder=zh?'例如：山火':'e.g. wildfire';
+  const gti=document.getElementById('genTopicInput');if(gti)gti.placeholder=zh?'例如：社区堆肥':'e.g. Community composting';
+  renderDashGrid();
+
+  // Update all text elements
+  const T={'sTitle':['Find the ground','搜索法案'],'sDesc':['Search across Hong Kong, Macau, and California.','搜索香港、澳门、加州立法数据'],
+    'sQueryTitle':['Search Query','搜索关键词'],'sSearchBtn':['Search','搜索'],'sNextBtn':['Next: Generate →','下一步：生成 →'],
+    'gTitle':['Draft your bill','起草法案'],'gDesc':['Generate a proposal and find support.','生成提案、寻找支持。'],
+    'gStepTitle':['Step 2 of 4 — Generate','第 2 步 / 共 4 步 — 生成'],'gGenBtn':['Generate →','生成 →'],
+    'aTitle':['Check the odds','分析通过率'],'aDesc':['Analyze pass rates and visualize data.','分析通过率与数据可视化。'],
+    'aStepTitle':['Step 3 of 4 — Analysis','第 3 步 / 共 4 步 — 分析'],
+    'scTitle':['Spread the word','社媒推广'],'scDesc':['Draft and publish social campaigns.','起草并发布社媒活动。'],
+    'scStepTitle':['Step 4 of 4 — Social Campaign','第 4 步 / 共 4 步 — 社媒活动'],
+    'bbTitle':['AI Black Box','AI 黑箱'],'bbDesc':['Raw reasoning trace.','推理追踪。']};
+  for(const[id,v]of Object.entries(T)){const el=document.getElementById(id);if(el)el.textContent=zh?v[1]:v[0]}
+  document.getElementById('chartPlaceholder').textContent=zh?'📊 图表区域':'📊 Chart area';
+  document.getElementById('bbPlaceholder').textContent=zh?'📦 输出区域':'📦 Output here';
+}
+
+async function switchPreset(key){STATE.preset=key;await fetch('/api/config/preset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({preset:key})})}
+
+// ── Search ──
+async function agentSearch(){
+  const q=document.getElementById('agentSearchInput').value.trim();if(!q)return;
+  const jurFilter=document.getElementById('searchJurFilter').value;
+  const c=document.getElementById('searchResults');c.innerHTML='<div class="loading">⏳</div>';
+  try{
+    const body={query:q,top_k:10};if(jurFilter)body.jurisdiction=jurFilter;
+    const r=await fetch('/api/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();if(d.error)throw new Error(d.error);
+    STATE.searchResults=d.results||[];renderSearchResults(STATE.searchResults);
+  }catch(e){c.innerHTML='<div class="card"><div class="card-title">Error</div><div style="color:#dc2626;font-size:13px">'+e.message+'</div></div>'}
+}
+function renderSearchResults(results){
+  const zh=STATE.lang==='zh-Hans';
+  if(!results.length){document.getElementById('searchResults').innerHTML='<div class="card"><div class="card-title">'+(zh?'相似法案':'Similar bills')+'</div><div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:12px">'+(zh?'无结果':'No results')+'</div></div><div class="card"><div class="card-title">'+(zh?'相关先例':'Precedent')+'</div><div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:12px">-</div></div>';return}
+  const bills=results.slice(0,6);
+  const jnames={CA:'CA',HK:'HK',MO:'MO'};
+  const html=bills.map(r=>{const m=r.metadata||{};const pct=Math.min(Math.round((r.score||0)*100),100);return '<div class="search-result" onclick="alert('+'\''+m.bill_id+': '+esc(m.title||'')+'\')"><div class="sr-title">'+esc(m.title||'')+'</div><div class="sr-meta">'+(jnames[m.jurisdiction]||m.jurisdiction)+' · '+(m.status||'')+' · '+pct+'%</div><div class="sr-bar"><div class="sr-bar-fill" style="width:'+pct+'%"></div></div></div>'}).join('');
+  document.getElementById('searchResults').innerHTML='<div class="card"><div class="card-title">'+(zh?'相似法案':'Similar bills')+' ('+bills.length+')</div><div>'+html+'</div></div><div class="card"><div class="card-title">'+(zh?'相关先例':'Precedent')+'</div><div style="font-size:13px;color:var(--text-secondary);padding:8px 0">'+(zh?'检索到 '+results.length+' 条':'Retrieved '+results.length+' results')+'</div></div>';
+}
+function esc(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
+
+// ── Petition ──
+let _currentPetitionId=null;
+let _analysisTopic='';
+async function startPetition(){
+  const topic=document.getElementById('genTopicInput').value.trim()||'Community bill';
+  const zh=STATE.lang==='zh-Hans';
+  const preview=document.getElementById('genPreview');const loading=document.getElementById('genLoading');
+  try{
+    loading.style.display='block';loading.textContent=zh?'⏳ 创建请愿...':'⏳ Creating petition...';preview.style.display='none';
+    const r=await fetch('/api/petition/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:topic,topic:topic,goal:2000})});
+    const d=await r.json();if(d.error)throw new Error(d.error);
+    _currentPetitionId=d.petition.id;
+    renderPetition(d.petition);
+  }catch(e){preview.textContent='⚠️ '+e.message;preview.style.display='block'}
+  loading.style.display='none';
+}
+async function renderPetition(pet){
+  const zh=STATE.lang==='zh-Hans';
+  const total=pet.count||pet.signatures.length;
+  const pct=Math.min(Math.round((total/pet.goal)*100),100);
+  let h='<div style="padding:4px 0 8px;font-weight:700;font-size:15px">✍️ '+esc(pet.title)+'</div>';
+  h+='<div style="font-size:13px;color:var(--text-secondary);margin-bottom:6px">'+total+' / '+pet.goal+' '+(zh?'人支持':'supporters')+'</div>';
+  h+='<div style="height:8px;border-radius:4px;background:var(--bg);overflow:hidden;margin-bottom:12px"><div style="height:100%;border-radius:4px;background:var(--teal);width:'+pct+'%"></div></div>';
+  h+='<div style="display:flex;gap:8px;margin-bottom:10px"><input type="text" id="signName" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px" placeholder="'+(zh?'你的名字（可选）':'Your name (optional)')+'"><button class="btn btn-primary" onclick="signPetition()" style="white-space:nowrap">'+(zh?'签名支持':'Sign')+'</button></div>';
+  if(pet.signatures.length>0){
+    h+='<div style="font-size:12px;color:var(--text-secondary);border-top:1px solid var(--border);padding-top:8px">'+(zh?'最近支持者：':'Recent supporters:')+'</div>';
+    pet.signatures.slice(-5).reverse().forEach(s=>{h+='<div style="font-size:12px;padding:2px 0">'+esc(s.name)+'</div>'});
+  }
+  const preview=document.getElementById('genPreview');
+  preview.innerHTML=h;preview.style.display='block';
+}
+async function signPetition(){
+  if(!_currentPetitionId){alert('Create a petition first');return}
+  const name=document.getElementById('signName').value.trim()||'Anonymous';
+  try{
+    const r=await fetch('/api/petition/sign',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({petition_id:_currentPetitionId,name})});
+    const d=await r.json();if(d.error)throw new Error(d.error);
+    const refetch=await fetch('/api/petition/'+_currentPetitionId);const updated=await refetch.json();
+    renderPetition({id:_currentPetitionId,title:document.getElementById('genTopicInput').value.trim()||'Petition',goal:updated.goal,count:updated.count,signatures:updated.signatures});
+  }catch(e){alert('Error: '+e.message)}
+}
+
+// ── Dashboard Search ──
+async function dashSearch(){
+  const q=document.getElementById('dashSearchInput').value.trim();if(!q)return;
+  const zh=STATE.lang==='zh-Hans';const container=document.getElementById('dashResults');
+  container.innerHTML='<div class="loading">⏳</div>';
+  try{
+    const r=await fetch('/api/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,top_k:6})});
+    const d=await r.json();if(d.error)throw new Error(d.error);
+    const results=d.results||[];
+    if(!results.length){container.innerHTML='<div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:12px">'+(zh?'无结果':'No results')+'</div>';return}
+    const jnames={CA:'🇺🇸 CA',HK:'🇭🇰 HK',MO:'🇲🇴 MO'};
+    let h='<div class="card"><div class="card-title">'+(zh?'搜索结果':'Results')+'</div><div>';
+    results.slice(0,5).forEach(r=>{const m=r.metadata||{};const pct=Math.min(Math.round((r.score||0)*100),100);h+='<div class="search-result"><div class="sr-title">'+esc(m.title||'')+'</div><div class="sr-meta">'+(jnames[m.jurisdiction]||m.jurisdiction)+' · '+pct+'%</div><div class="sr-bar"><div class="sr-bar-fill" style="width:'+pct+'%"></div></div></div>'});
+    h+='</div></div><div style="margin-top:8px;text-align:right"><button class="btn btn-primary" onclick="switchAgent(\'search\')">'+(zh?'高级搜索 →':'Advanced →')+'</button></div>';
+    container.innerHTML=h;
+  }catch(e){container.innerHTML='<div style="color:#dc2626;font-size:13px">⚠️ '+e.message+'</div>'}
+}
+
+// ── Generate ──
+async function doGenerate(){
+  const topic=document.getElementById('genTopicInput').value.trim();if(!topic){alert('Enter a topic');return}
+  const style=document.getElementById('genStyleSelect').value;
+  const preview=document.getElementById('genPreview');const loading=document.getElementById('genLoading');
+  preview.style.display='none';loading.style.display='block';
+  try{
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style,lang:STATE.lang==='zh-Hans'?'zh':'en'})});
+    const d=await r.json();if(d.error)throw new Error(d.error);
+    preview.textContent=d.generated||'Failed';preview.style.display='block';
+  }catch(e){preview.textContent='⚠️ '+e.message;preview.style.display='block'}
+  loading.style.display='none';
+}
+
+async function findLegislators(){
+  const topic=document.getElementById('genTopicInput').value.trim();if(!topic){alert('Enter a topic');return}
+  const zh=STATE.lang==='zh-Hans';const jur=STATE.preset==='california'?'CA':'HK';
+  const preview=document.getElementById('genPreview');const loading=document.getElementById('genLoading');
+  preview.style.display='none';loading.style.display='block';loading.textContent=zh?'⏳ 寻找议员...':'⏳ Finding...';
+  try{
+    const r=await fetch('/api/legislators',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,jurisdiction:jur,lang:zh?'zh':'en'})});
+    const d=await r.json();if(d.error)throw new Error(d.error);
+    const legislators=d.legislators||[];
+    if(!legislators.length){preview.textContent=zh?'未找到':'Not found'}else{
+      let h='';
+      legislators.forEach(l=>{h+='<div style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px"><div style="font-weight:700;font-size:14px">'+esc(l.name)+'</div><div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">'+esc(l.chamber||'')+' · '+esc(l.party||'')+'</div><div style="font-size:13px;line-height:1.5">'+esc(l.reason||'')+'</div></div>'});
+      preview.innerHTML=h;
+    }
+    preview.style.display='block';
+  }catch(e){preview.textContent='⚠️ '+e.message;preview.style.display='block'}
+  loading.style.display='none';
+}
+
+// ── Analysis ──
+function analysisUseTopic(){
+  const q=document.getElementById('analysisTopicInput').value.trim();
+  const topic=q||STATE.lastGenTopic;if(!topic)return;_analysisTopic=topic;
+  const zh=STATE.lang==='zh-Hans';
+  document.getElementById('analysisSelectedTitle').textContent=topic;document.getElementById('analysisSelected').style.display='block';
+  document.getElementById('chartPlaceholder').innerHTML='📊 '+(zh?'分析:':'Analyzing:')+' <b>'+esc(topic)+'</b><br><div style="font-size:12px;margin-top:8px">'+(zh?'点击下方按钮查看通过率':'Click buttons for pass rates')+'</div>';
+}
+function getAnalysisTopic(){
+  const input=document.getElementById('analysisTopicInput').value.trim();
+  if(input) _analysisTopic=input;
+  return _analysisTopic;
+}
+async function loadPassRateAnalysis(){
+  const topic=getAnalysisTopic();
+  if(!topic){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
+  const ph=document.getElementById('chartPlaceholder');ph.innerHTML='⏳ '+(STATE.lang==='zh-Hans'?'AI 分析中...':'Analyzing...');ph.style.textAlign='center';
+  try{
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:STATE.lang==='zh-Hans'?'zh':'en',analysis:true})});
+    const d=await r.json();
+    if(d.generated) ph.innerHTML='🏛️ <b>'+esc(topic)+'</b><br><br>'+d.generated.replace(/\n/g,'<br>');
+    else ph.innerHTML='⚠️ AI analysis unavailable.';
+  }catch(e){ph.innerHTML='⚠️ Error: '+e.message;}
+}
+async function generateGraph(){
+  const topic=getAnalysisTopic()||'all bills';
+  const ph=document.getElementById('chartPlaceholder');
+  const zh=STATE.lang==='zh-Hans';ph.innerHTML='⏳ '+(zh?'AI 生成图表...':'Generating chart...');
+  const p=STATE.preset;jurList=(p==='california')?['CA']:(p==='hackathon'||p==='china')?['HK','MO']:['CA','HK','MO'];
+  const jcolors={'CA':'#2563eb','HK':'#14b8a6','MO':'#d97706'};
+  try{
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:zh?'zh':'en',analysis:true})});
+    const d=await r.json();const aiText=d.generated||'';
+    const rateMatch=aiText.match(/(\d+)(%)/);const aiRate=rateMatch?Math.min(parseInt(rateMatch[1]),100):50;
+    let html='<div style="font-weight:700;font-size:14px;margin-bottom:8px">📊 '+esc(topic)+'</div>'+(aiText?'<div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">'+aiText.replace(/\n/g,'<br>')+'</div>':'');
+    html+='<div style="font-size:13px;font-weight:600;margin-bottom:8px">'+(zh?'AI 预测通过率':'AI estimated pass rate')+'</div>';
+    jurList.forEach(j=>{
+      const c=jcolors[j]||'#64748b';
+      html+='<div style="margin:8px 0"><div style="font-weight:600;font-size:13px;margin-bottom:4px">'+(j==='CA'?'🇺🇸 CA':j==='HK'?'🇭🇰 HK':'🇲🇴 MO')+'</div>';
+      html+='<div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:24px;background:var(--bg);border-radius:6px;overflow:hidden"><div style="width:'+aiRate+'%;height:100%;background:'+c+';border-radius:6px"></div></div>';
+      html+='<span style="font-size:14px;font-weight:700;min-width:50px;text-align:right;color:'+c+'">'+aiRate+'%</span></div></div>';
+    });
+    ph.innerHTML=html;ph.style.textAlign='left';
+  }catch(e){ph.innerHTML='⚠️ Error: '+e.message;ph.style.textAlign='center';}
+}
+
+async function loadOverallPassRate(){
+  const topic=getAnalysisTopic();
+  if(!topic){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
+  const ph=document.getElementById('chartPlaceholder');ph.innerHTML='⏳ '+(STATE.lang==='zh-Hans'?'AI 分析中...':'Analyzing...');ph.style.textAlign='center';
+  try{
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:STATE.lang==='zh-Hans'?'zh':'en',analysis:true})});
+    const d=await r.json();
+    if(d.generated) ph.innerHTML='📈 <b>'+esc(topic)+'</b><br><br>'+d.generated.replace(/\n/g,'<br>');
+    else ph.innerHTML='⚠️ AI analysis unavailable.';
+  }catch(e){ph.innerHTML='⚠️ Error: '+e.message;}
+}
+// ── Petition ──
+
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
