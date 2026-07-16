@@ -33,35 +33,44 @@ from engine.config import (
 
 app = FastAPI(title="Leges", version="2.0.0")
 
-# ── 全局模型和数据库连接(启动时加载一次) ──
-_search_model = None
-_search_db = None
+# ── 轻量搜索:预计算向量(5MB) + numpy + HuggingFace API ──
 _current_preset = "hackathon"
-_search_available = True
+_embeddings = None
+_metadata = None
+_emb_dim = 384
 
-def get_search_model():
-    global _search_model, _search_available
-    if _search_model is None and _search_available:
+def load_embeddings():
+    global _embeddings, _metadata
+    if _embeddings is None:
         try:
-            from sentence_transformers import SentenceTransformer
-            _search_model = SentenceTransformer("all-MiniLM-L6-v2")
+            import numpy as np
+            data_dir = Path(__file__).parent.parent / "data"
+            _embeddings = np.load(str(data_dir / "embeddings.npy"))
+            import json
+            with open(data_dir / "bill_metadata.json") as f:
+                _metadata = json.load(f)
         except Exception:
-            _search_available = False
-    return _search_model
+            _embeddings = []
+            _metadata = []
+    return _embeddings, _metadata
 
-def get_search_db():
-    global _search_db, _search_available
-    if _search_db is None and _search_available:
-        try:
-            import chromadb
-            from chromadb.config import Settings
-            _search_db = chromadb.PersistentClient(
-                path=str(Path(__file__).parent.parent / "data" / "vector_store"),
-                settings=Settings(anonymized_telemetry=False),
-            )
-        except Exception:
-            _search_available = False
-    return _search_db
+def embed_query(query: str) -> list[float] | None:
+    """使用 HuggingFace Inference API 将查询转为向量。"""
+    import httpx
+    try:
+        resp = httpx.post(
+            "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2",
+            json={"inputs": query, "options": {"wait_for_model": True}},
+            timeout=30,
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            if data and isinstance(data, list):
+                # HF returns [[...]] for single input
+                return data[0] if data and isinstance(data[0], list) else data
+    except Exception:
+        pass
+    return None
 
 # ── 静态文件 ──
 static_dir = Path(__file__).parent / "static"
@@ -123,43 +132,48 @@ def api_set_preset(body: PresetSwitch):
 def api_search(body: SearchRequest):
     """跨法域语义搜索。"""
     try:
-        model = get_search_model()
-        db = get_search_db()
-        if not _search_available or model is None or db is None:
-            return JSONResponse({"results": [], "query": body.query, "note": "Vector search not available in this deployment. AI generation is still functional."})
+        import numpy as np
+        embeddings, metadata = load_embeddings()
+        if not len(embeddings):
+            return JSONResponse({"results": [], "query": body.query, "note": "Search data not loaded."})
 
-        query_emb = model.encode([body.query])[0].tolist()
+        # 嵌入查询
+        query_vec = embed_query(body.query)
+        if query_vec is None:
+            return JSONResponse({"results": [], "query": body.query, "note": "Search API unavailable."})
 
-        jur_collections = {"CA": "ca_bills", "MO": "mo_laws", "HK": "hk_bills"}
+        query_arr = np.array(query_vec, dtype=np.float32)
 
-        # 如果未指定法域过滤,则按当前预设的法域来限制
-        if not body.jurisdiction:
-            active_cfg = get_active_config()
-            allowed_codes = [j.code for j in active_cfg.jurisdictions]
-            cols = [jur_collections[c] for c in allowed_codes if c in jur_collections]
-            if not cols:
-                cols = [c.name for c in db.list_collections()
-                        if c.name in jur_collections.values()]
-        elif body.jurisdiction in jur_collections:
-            cols = [jur_collections[body.jurisdiction]]
+        # 计算余弦相似度
+        norms = np.linalg.norm(embeddings, axis=1)
+        emb_normed = embeddings / norms.reshape(-1, 1)
+        query_norm = np.linalg.norm(query_arr)
+        if query_norm > 0:
+            query_arr = query_arr / query_norm
+        scores = np.dot(emb_normed, query_arr)
+
+        # 按法域过滤
+        if body.jurisdiction:
+            jur_set = {body.jurisdiction}
         else:
-            cols = []
+            active_cfg = get_active_config()
+            jur_set = set(j.code for j in active_cfg.jurisdictions)
+
+        # 获取匹配结果
+        scored = [(float(scores[i]), metadata[i]) for i in range(len(scores))
+                  if metadata[i].get("jurisdiction") in jur_set]
+        scored.sort(key=lambda x: -x[0])
 
         results = []
-        for col_name in cols:
-            col = db.get_collection(col_name)
-            res = col.query(query_embeddings=[query_emb], n_results=body.top_k)
-            if res and res["ids"]:
-                for i in range(len(res["ids"][0])):
-                    results.append({
-                        "id": res["ids"][0][i],
-                        "score": 1 - min(float(res["distances"][0][i]) / 2, 1),
-                        "document": (res["documents"][0][i] if res.get("documents") else "")[:200],
-                        "metadata": res["metadatas"][0][i] if res.get("metadatas") else {},
-                    })
+        for score, meta in scored[:body.top_k]:
+            results.append({
+                "id": meta["bill_id"],
+                "score": score,
+                "document": meta.get("title", ""),
+                "metadata": meta,
+            })
 
-        results.sort(key=lambda r: -r["score"])
-        return {"results": results[:body.top_k], "query": body.query}
+        return {"results": results, "query": body.query}
 
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
