@@ -175,6 +175,11 @@ def api_set_preset(body: PresetSwitch):
     cfg_mod.ACTIVE_PRESET = key
     return {"preset": key, "config": get_active_config().to_dict()}
 
+# ── API: 健康检查 ──
+@app.get("/api/health")
+def api_health():
+    return {"status": "ok", "mode": "spark+deepseek"}
+
 # ── API: 搜索 ──
 @app.post("/api/search")
 def api_search(body: SearchRequest):
