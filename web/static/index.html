@@ -316,7 +316,12 @@ async function agentSearch(){
     const body={query:q,top_k:10};if(jurFilter)body.jurisdiction=jurFilter;
     const r=await fetch('/api/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const d=await r.json();if(d.error)throw new Error(d.error);
-    STATE.searchResults=d.results||[];renderSearchResults(STATE.searchResults);
+    STATE.searchResults=d.results||[];
+    if(d.note && !d.results.length){
+      c.innerHTML='<div class="card"><div class="card-title">Note</div><div style="font-size:13px;color:var(--text-secondary);padding:12px;text-align:center">'+d.note+'</div></div>';
+      return;
+    }
+    renderSearchResults(STATE.searchResults);
   }catch(e){c.innerHTML='<div class="card"><div class="card-title">Error</div><div style="color:#dc2626;font-size:13px">'+e.message+'</div></div>'}
 }
 function renderSearchResults(results){

@@ -167,12 +167,11 @@ def api_search(body: SearchRequest):
             query_arr = query_arr / query_norm
         scores = np.dot(emb_normed, query_arr)
 
-        # 按法域过滤
+        # 按法域过滤(默认搜全部)
         if body.jurisdiction:
             jur_set = {body.jurisdiction}
         else:
-            active_cfg = get_active_config()
-            jur_set = set(j.code for j in active_cfg.jurisdictions)
+            jur_set = {"CA", "HK", "MO"}
 
         # 获取匹配结果
         scored = [(float(scores[i]), metadata[i]) for i in range(len(scores))
