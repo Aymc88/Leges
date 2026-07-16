@@ -403,6 +403,18 @@ def api_bill_detail(jurisdiction: str, bill_id: str):
     return JSONResponse({"error": "未找到"}, status_code=404)
 
 
+# ── 健康检查 ──
+@app.get("/api/health")
+def api_health():
+    emb, meta = load_embeddings()
+    return {
+        "status": "ok",
+        "embeddings": len(emb) if isinstance(emb, list) else (emb.shape[0] if hasattr(emb, 'shape') else 0),
+        "metadata": len(meta),
+        "hf_available": embed_query("test") is not None,
+    }
+
+
 # ── SPA 入口 ──
 @app.get("/")
 def index():
