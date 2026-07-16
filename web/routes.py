@@ -55,19 +55,34 @@ def load_embeddings():
     return _embeddings, _metadata
 
 def embed_query(query: str) -> list[float] | None:
-    """使用 HuggingFace Inference API 将查询转为向量。"""
-    import httpx
+    """将查询转为向量。先试 HuggingFace API,不行就试本地模型。"""
+    import httpx, os, sys
+    # 方法1: HuggingFace Inference API
+    hf_token = os.environ.get("HF_TOKEN", "")
+    headers = {"Content-Type": "application/json"}
+    if hf_token:
+        headers["Authorization"] = f"Bearer {hf_token}"
     try:
         resp = httpx.post(
             "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2",
             json={"inputs": query, "options": {"wait_for_model": True}},
-            timeout=30,
+            headers=headers,
+            timeout=60,
         )
         if resp.status_code == 200:
             data = resp.json()
             if data and isinstance(data, list):
-                # HF returns [[...]] for single input
-                return data[0] if data and isinstance(data[0], list) else data
+                vec = data[0] if data and isinstance(data[0], list) else data
+                if vec and len(vec) == _emb_dim:
+                    return vec
+    except Exception:
+        pass
+    # 方法2: 本地 SentenceTransformer (如果在 DGX Spark 上)
+    try:
+        from sentence_transformers import SentenceTransformer
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+        vec = model.encode([query])[0].tolist()
+        return vec
     except Exception:
         pass
     return None
@@ -140,7 +155,7 @@ def api_search(body: SearchRequest):
         # 嵌入查询
         query_vec = embed_query(body.query)
         if query_vec is None:
-            return JSONResponse({"results": [], "query": body.query, "note": "Search API unavailable."})
+            return JSONResponse({"results": [], "query": body.query, "note": "Embedding API unavailable. Try again later."})
 
         query_arr = np.array(query_vec, dtype=np.float32)
 
