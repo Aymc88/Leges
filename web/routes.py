@@ -193,6 +193,120 @@ def api_search(body: SearchRequest):
         return JSONResponse({"error": str(e)}, status_code=500)
 
 
+# ── API: 生成法案 ──
+class GenerateRequest(BaseModel):
+    topic: str; title: str = ""; style: str = "standard"; lang: str = "zh"; analysis: bool = False
+
+@app.post("/api/generate")
+def api_generate(body: GenerateRequest):
+    try:
+        import httpx, os
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
+        base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
+        model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
+        if not api_key:
+            return JSONResponse({"error": "API not configured"}, status_code=500)
+
+        if body.analysis:
+            if body.lang == "zh":
+                prompt = f"你是一位立法分析师。请分析以下法案主题的通过可能性。\n\n主题: {body.topic}\n\n请给出:\n1. 估计通过率 (0-100%)\n2. 各政党投票倾向\n3. 支持因素 (2-3)\n4. 反对因素 (2-3)\n5. 最适合提出该法案的法域 (加州/香港/澳门) 及原因\n\n简明扼要。"
+            else:
+                prompt = f"You are a legislative analyst. Analyze passage likelihood for this bill topic.\n\nTopic: {body.topic}\n\nJurisdictions: CA=California(USA), HK=Hong Kong SAR(China), MO=Macau SAR(China). MO is Macau, NOT Missouri.\n\nProvide:\n1. Estimated pass rate (0-100%)\n2. Party breakdown per jurisdiction\n3. Supporting factors (2-3)\n4. Opposing factors (2-3)\n5. Best jurisdiction (CA/HK/MO only) and why\n\nConcise, 4-6 sentences."
+        elif body.lang == "zh":
+            guide = {"standard":"","detailed":"请写得非常详细，每一条款展开，800-1500字。","simple":"请写得简短精炼，200-400字。"}
+            prompt = f"你是一位立法助理。请生成一份法案草案。\n\n标题: {body.title or body.topic}\n主题: {body.topic}\n{guide.get(body.style,'')}\n\n结构: 名称、目的、关键条款、实施机制、预期影响。输出中文。"
+        else:
+            guide = {"standard":"","detailed":"Be very detailed, 800-1500 words.","simple":"Be concise, 200-400 words."}
+            prompt = f"You are a legislative drafter. Generate a bill draft.\n\nTitle: {body.title or body.topic}\nTopic: {body.topic}\n{guide.get(body.style,'')}\n\nStructure: title, purpose, key provisions, implementation, impact. Output English."
+
+        with httpx.Client(timeout=90) as http:
+            resp = http.post(f"{base_url}/messages", headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+                json={"model": model, "max_tokens": 3000, "messages": [{"role": "user", "content": prompt}]})
+            data = resp.json()
+            text = "".join(b.get("text","") for b in data.get("content",[]) if b.get("type")=="text")
+        return {"success": True, "generated": text or "No content", "title": body.title or body.topic[:50]}
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+# ── API: 找议员 ──
+class LegislatorRequest(BaseModel):
+    topic: str; jurisdiction: str = "CA"; lang: str = "en"
+
+@app.post("/api/legislators")
+def api_legislators(body: LegislatorRequest):
+    try:
+        import httpx, os, re, json
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
+        base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
+        model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
+        jur_names = {"CA":"California", "HK":"Hong Kong", "MO":"Macau"}
+        if body.lang == "zh":
+            prompt = f"推荐3-5位可能支持该法案的{jur_names.get(body.jurisdiction,'')}议员。\n\n主题: {body.topic}\n\n每人: 姓名、议院、选区、政党、支持理由。仅输出JSON数组，字段: name, chamber, district, party, reason。"
+        else:
+            prompt = f"Recommend 3-5 legislators in {jur_names.get(body.jurisdiction,'')} who would support this bill.\n\nTopic: {body.topic}\n\nEach: name, chamber, district, party, reason. Output ONLY JSON array with fields: name, chamber, district, party, reason."
+        with httpx.Client(timeout=60) as http:
+            resp = http.post(f"{base_url}/messages", headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+                json={"model": model, "max_tokens": 1500, "messages": [{"role": "user", "content": prompt}]})
+            text = "".join(b.get("text","") for b in resp.json().get("content",[]) if b.get("type")=="text")
+        m = re.search(r'\[.*\]', text, re.DOTALL)
+        legislators = json.loads(m.group()) if m else []
+        return {"success": True, "legislators": legislators, "topic": body.topic}
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+# ── API: 请愿 ──
+_petitions = {}; _petition_id_counter = 0
+
+class PetitionCreateRequest(BaseModel):
+    title: str; topic: str; goal: int = 2000
+
+class PetitionSignRequest(BaseModel):
+    petition_id: str; name: str = ""
+
+@app.post("/api/petition/create")
+def api_petition_create(body: PetitionCreateRequest):
+    global _petition_id_counter; _petition_id_counter += 1
+    pid = f"pet-{_petition_id_counter}"
+    _petitions[pid] = {"id": pid, "title": body.title, "topic": body.topic, "goal": body.goal, "signatures": []}
+    return {"success": True, "petition": _petitions[pid]}
+
+@app.get("/api/petition/{petition_id}")
+def api_petition_get(petition_id: str):
+    p = _petitions.get(petition_id)
+    if not p:
+        return JSONResponse({"error": "Not found"}, status_code=404)
+    return {"id": p["id"], "title": p["title"], "topic": p["topic"], "goal": p["goal"], "count": len(p["signatures"]), "signatures": p["signatures"][-20:]}
+
+@app.post("/api/petition/sign")
+def api_petition_sign(body: PetitionSignRequest):
+    p = _petitions.get(body.petition_id)
+    if not p:
+        return JSONResponse({"error": "Not found"}, status_code=404)
+    p["signatures"].append({"name": body.name or "Anonymous"})
+    return {"success": True, "count": len(p["signatures"]), "goal": p["goal"]}
+
+
+# ── API: 法案详情 ──
+@app.get("/api/bills/{jurisdiction}/{bill_id}")
+def api_bill_detail(jurisdiction: str, bill_id: str):
+    jur_file = {"CA": "ca_bills.jsonl", "MO": "mo_laws.jsonl", "HK": "hk_bills.jsonl"}
+    fname = jur_file.get(jurisdiction)
+    if not fname:
+        return JSONResponse({"error": "Unknown jurisdiction"}, status_code=404)
+    path = Path(__file__).parent.parent / "output" / fname
+    if not path.exists():
+        return JSONResponse({"error": "Data not found"}, status_code=404)
+    with open(path) as f:
+        for line in f:
+            rec = json.loads(line)
+            rid = rec.get("bill_id") or f"MO-{rec.get('law_id', '')}"
+            if rid == bill_id:
+                return rec
+    return JSONResponse({"error": "Not found"}, status_code=404)
+
+
 # ── SPA 入口 ──
 @app.get("/")
 def index():
