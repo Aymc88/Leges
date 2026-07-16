@@ -191,3 +191,12 @@ def api_search(body: SearchRequest):
         return {"results": results, "query": body.query}
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
+
+
+# ── SPA 入口 ──
+@app.get("/")
+def index():
+    html_path = static_dir / "index.html"
+    if html_path.exists():
+        return HTMLResponse(html_path.read_text(encoding="utf-8"))
+    return HTMLResponse("<h1>Leges</h1><p>Frontend not found.</p>")
