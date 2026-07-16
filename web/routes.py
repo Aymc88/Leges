@@ -37,23 +37,30 @@ app = FastAPI(title="Leges", version="2.0.0")
 _search_model = None
 _search_db = None
 _current_preset = "hackathon"
+_search_available = True
 
 def get_search_model():
-    global _search_model
-    if _search_model is None:
-        from sentence_transformers import SentenceTransformer
-        _search_model = SentenceTransformer("all-MiniLM-L6-v2")
+    global _search_model, _search_available
+    if _search_model is None and _search_available:
+        try:
+            from sentence_transformers import SentenceTransformer
+            _search_model = SentenceTransformer("all-MiniLM-L6-v2")
+        except Exception:
+            _search_available = False
     return _search_model
 
 def get_search_db():
-    global _search_db
-    if _search_db is None:
-        import chromadb
-        from chromadb.config import Settings
-        _search_db = chromadb.PersistentClient(
-            path=str(Path(__file__).parent.parent / "data" / "vector_store"),
-            settings=Settings(anonymized_telemetry=False),
-        )
+    global _search_db, _search_available
+    if _search_db is None and _search_available:
+        try:
+            import chromadb
+            from chromadb.config import Settings
+            _search_db = chromadb.PersistentClient(
+                path=str(Path(__file__).parent.parent / "data" / "vector_store"),
+                settings=Settings(anonymized_telemetry=False),
+            )
+        except Exception:
+            _search_available = False
     return _search_db
 
 # ── 静态文件 ──
@@ -118,6 +125,8 @@ def api_search(body: SearchRequest):
     try:
         model = get_search_model()
         db = get_search_db()
+        if not _search_available or model is None or db is None:
+            return JSONResponse({"results": [], "query": body.query, "note": "Vector search not available in this deployment. AI generation is still functional."})
 
         query_emb = model.encode([body.query])[0].tolist()
 
