@@ -98,9 +98,8 @@ def api_health():
 def api_search(body: SearchRequest):
     try:
         query = body.query
-        # 如果查询含中文,先翻译成英文
-        import re as _re
-        if _re.search(r'[一-鿿]', query):
+        # 如果查询含非ASCII(中文),先翻译成英文
+        if not query.isascii():
             try:
                 import httpx, os
                 api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
@@ -108,9 +107,9 @@ def api_search(body: SearchRequest):
                 model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
                 if api_key:
                     resp = httpx.post(f"{base_url}/messages", headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-                        json={"model": model, "max_tokens": 100, "messages": [{"role": "user", "content": f"Translate this to English (only the translation): {query}"}]}, timeout=15)
-                    text = "".join(b.get("text","") for b in resp.json().get("content",[]) if b.get("type")=="text")
-                    if text: query = text.strip()
+                        json={"model": model, "max_tokens": 100, "messages": [{"role": "user", "content": f"Translate this Chinese query to English keywords for bill search. ONLY output the English keywords, nothing else: {query}"}]}, timeout=30)
+                    text = "".join(b.get("text","") for b in resp.json().get("content",[]) if b.get("type")=="text").strip()
+                    if text: query = text.split('\n')[0].strip('"\'')
             except Exception:
                 pass
         cfg = get_active_config()
