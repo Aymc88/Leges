@@ -205,11 +205,8 @@ def api_search(body: SearchRequest):
             cfg = get_active_config()
             jur_set = set(j.code for j in cfg.jurisdictions) if cfg.jurisdictions else {"CA", "HK", "MO"}
 
-        results = search_local(body.query, body.top_k)
+        results = search_deepseek(body.query, body.top_k)
         results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set]
-        if not results:
-            results = search_deepseek(body.query, body.top_k)
-            results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set]
         return {"results": results[:body.top_k], "query": body.query}
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
