@@ -184,11 +184,19 @@ def api_health():
 @app.post("/api/search")
 def api_search(body: SearchRequest):
     try:
-        # 优先用向量搜索(Spark),失败则用 Deepseek Chat(Vercel)
+        # 按法域过滤(默认按预设)
+        if body.jurisdiction:
+            jur_set = {body.jurisdiction}
+        else:
+            cfg = get_active_config()
+            jur_set = set(j.code for j in cfg.jurisdictions) if cfg.jurisdictions else {"CA", "HK", "MO"}
+
         results = search_local(body.query, body.top_k)
+        results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set]
         if not results:
             results = search_deepseek(body.query, body.top_k)
-        return {"results": results, "query": body.query}
+            results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set]
+        return {"results": results[:body.top_k], "query": body.query}
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
