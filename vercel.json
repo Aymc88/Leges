@@ -1,10 +1,11 @@
 {
-  "builds": [
-    {
-      "src": "web/routes.py",
-      "use": "@vercel/python",
-      "config": { "maxDuration": 30 }
+  "functions": {
+    "web/routes.py": {
+      "maxDuration": 30
     }
+  },
+  "builds": [
+    { "src": "web/routes.py", "use": "@vercel/python" }
   ],
   "routes": [
     { "src": "/static/(.*)", "dest": "web/routes.py" },
