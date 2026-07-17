@@ -340,15 +340,21 @@ async function agentSearch(){
       c.innerHTML='<div class="card"><div class="card-title">Note</div><div style="font-size:13px;color:var(--text-secondary);padding:12px;text-align:center">'+d.note+'</div></div>';
       return;
     }
-    renderSearchResults(STATE.searchResults);
+    let _translated=null;
+    if(STATE.lang==='zh-Hans'&&STATE.searchResults.length){
+      const titles=STATE.searchResults.slice(0,6).map(r=>r.metadata?.title||'');
+      try{const tr=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({texts:titles,lang:'zh'})});
+      const td=await tr.json();if(td.translations)_translated=td.translations;}catch(e){}
+    }
+    renderSearchResults(STATE.searchResults, _translated);
   }catch(e){c.innerHTML='<div class="card"><div class="card-title">Error</div><div style="color:#dc2626;font-size:13px">'+e.message+'</div></div>'}
 }
-function renderSearchResults(results){
+function renderSearchResults(results, translated){
   const zh=STATE.lang==='zh-Hans';
   if(!results.length){document.getElementById('searchResults').innerHTML='<div class="card"><div class="card-title">'+(zh?'相似法案':'Similar bills')+'</div><div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:12px">'+(zh?'无结果':'No results')+'</div></div><div class="card"><div class="card-title">'+(zh?'相关先例':'Precedent')+'</div><div style="font-size:13px;color:var(--text-secondary);text-align:center;padding:12px">-</div></div>';return}
   const bills=results.slice(0,6);
   const jnames={CA:'CA',HK:'HK',MO:'MO'};
-  const html=bills.map(r=>{const m=r.metadata||{};const pct=Math.min(Math.round((r.score||0)*100),100);return '<div class="search-result" onclick="alert('+'\''+m.bill_id+': '+esc(m.title||'')+'\')"><div class="sr-title">'+esc(m.title||'')+'</div><div class="sr-meta">'+(jnames[m.jurisdiction]||m.jurisdiction)+' · '+(m.status||'')+' · '+pct+'%</div><div class="sr-bar"><div class="sr-bar-fill" style="width:'+pct+'%"></div></div></div>'}).join('');
+  const html=bills.map((r,i)=>{const m=r.metadata||{};const pct=Math.min(Math.round((r.score||0)*100),100);const title=translated&&translated[i]?translated[i]:m.title||'';return '<div class="search-result" onclick="alert('+'\''+m.bill_id+': '+esc(title)+'\')"><div class="sr-title">'+esc(title)+'</div><div class="sr-meta">'+(jnames[m.jurisdiction]||m.jurisdiction)+' · '+(m.status||'')+' · '+pct+'%</div><div class="sr-bar"><div class="sr-bar-fill" style="width:'+pct+'%"></div></div></div>'}).join('');
   document.getElementById('searchResults').innerHTML='<div class="card"><div class="card-title">'+(zh?'相似法案':'Similar bills')+' ('+bills.length+')</div><div>'+html+'</div></div><div class="card"><div class="card-title">'+(zh?'相关先例':'Precedent')+'</div><div style="font-size:13px;color:var(--text-secondary);padding:8px 0">'+(zh?'检索到 '+results.length+' 条':'Retrieved '+results.length+' results')+'</div></div>';
 }
 function esc(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
