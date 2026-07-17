@@ -192,7 +192,8 @@ def api_set_preset(body: PresetSwitch):
 # ── API: 健康检查 ──
 @app.get("/api/health")
 def api_health():
-    return {"status": "ok", "mode": "spark+deepseek"}
+    emb, meta = load_embeddings()
+    return {"status": "ok", "mode": "spark+deepseek", "embeddings": len(emb) if emb else 0, "metadata": len(meta)}
 
 # ── API: 搜索 ──
 @app.post("/api/search")
