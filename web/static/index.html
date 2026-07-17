@@ -441,9 +441,7 @@ async function findLegislators(){
 function analysisUseTopic(){
   const q=document.getElementById('analysisTopicInput').value.trim();
   const topic=q||STATE.lastGenTopic;if(!topic)return;_analysisTopic=topic;
-  const zh=STATE.lang==='zh-Hans';
   document.getElementById('analysisSelectedTitle').textContent=topic;document.getElementById('analysisSelected').style.display='block';
-  document.getElementById('chartPlaceholder').innerHTML='📊 '+(zh?'分析:':'Analyzing:')+' <b>'+esc(topic)+'</b><br><div style="font-size:12px;margin-top:8px">'+(zh?'点击下方按钮查看通过率':'Click buttons for pass rates')+'</div>';
   generateGraph();
 }
 function getAnalysisTopic(){
@@ -452,13 +450,7 @@ function getAnalysisTopic(){
   return _analysisTopic;
 }
 async function loadPassRateAnalysis(){
-  const topic=getAnalysisTopic();if(!topic){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
-  const ph=document.getElementById('chartPlaceholder');const zh=STATE.lang==='zh-Hans';ph.innerHTML='⏳ '+(zh?'分析政党投票倾向...':'Analyzing party votes...');
-  try{
-    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:zh?'zh':'en',analysis:true})});
-    const d=await r.json();const t=d.generated||'';
-    ph.innerHTML='🏛️ <b>'+esc(topic)+'</b><br><br>'+t.replace(/\n/g,'<br>');
-  }catch(e){ph.innerHTML='⚠️ Error: '+e.message;}
+  generateGraph();
 }
 async function generateGraph(){
   const topic=getAnalysisTopic()||'all bills';
@@ -486,15 +478,7 @@ async function generateGraph(){
 }
 
 async function loadOverallPassRate(){
-  const topic=getAnalysisTopic();
-  if(!topic){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
-  const ph=document.getElementById('chartPlaceholder');ph.innerHTML='⏳ '+(STATE.lang==='zh-Hans'?'AI 分析中...':'Analyzing...');ph.style.textAlign='center';
-  try{
-    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:STATE.lang==='zh-Hans'?'zh':'en',analysis:true})});
-    const d=await r.json();
-    if(d.generated) ph.innerHTML='📈 <b>'+esc(topic)+'</b><br><br>'+d.generated.replace(/\n/g,'<br>');
-    else ph.innerHTML='⚠️ AI analysis unavailable.';
-  }catch(e){ph.innerHTML='⚠️ Error: '+e.message;}
+  generateGraph();
 }
 // ── Petition ──
 
