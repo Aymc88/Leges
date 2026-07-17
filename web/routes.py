@@ -36,13 +36,27 @@ def load_embeddings():
     global _embeddings, _metadata
     if _embeddings is None:
         try:
-            import numpy as np
             data_dir = Path(__file__).parent.parent / "data"
+            # 尝试 numpy (Spark 上有)
+            import numpy as np
             _embeddings = np.load(str(data_dir / "embeddings.npy"))
+        except Exception:
+            try:
+                # 无 numpy: 自己解析 .npy 文件
+                with open(str(data_dir / "embeddings.npy"), "rb") as f:
+                    f.seek(128)  # skip header
+                    raw = f.read()
+                    dim = 384
+                    cnt = len(raw) // (dim * 4)
+                    import struct
+                    _embeddings = [list(struct.unpack(f"{dim}f", raw[i*dim*4:(i+1)*dim*4])) for i in range(cnt)]
+            except Exception:
+                _embeddings = []
+        try:
             with open(data_dir / "bill_metadata.json") as f:
                 _metadata = json.load(f)
         except Exception:
-            _embeddings, _metadata = [], []
+            _metadata = []
     return _embeddings, _metadata
 
 def embed_query_deepseek(query: str) -> list[float] | None:
