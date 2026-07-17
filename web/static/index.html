@@ -451,7 +451,6 @@ function getAnalysisTopic(){
   return _analysisTopic;
 }
 async function loadPassRateAnalysis(){
-  if(!getAnalysisTopic()){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
   generateGraph();
 }
 async function generateGraph(){
