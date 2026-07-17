@@ -305,7 +305,17 @@ function switchLang(code){
   document.getElementById('bbPlaceholder').textContent=zh?'📦 输出区域':'📦 Output here';
 }
 
-async function switchPreset(key){STATE.preset=key;await fetch('/api/config/preset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({preset:key})})}
+async function switchPreset(key){
+  STATE.preset=key;
+  await fetch('/api/config/preset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({preset:key})});
+  // 按预设自动设置搜索法域过滤
+  const jurSel=document.getElementById('searchJurFilter');
+  if(jurSel){
+    if(key==='california')jurSel.value='CA';
+    else if(key==='hackathon'||key==='china')jurSel.value='';
+    else jurSel.value='';
+  }
+}
 
 // ── Search ──
 async function agentSearch(){
