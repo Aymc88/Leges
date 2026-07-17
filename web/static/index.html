@@ -196,10 +196,10 @@ input,textarea,select{font-family:inherit}
       <div class="step-progress"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
       <div class="card">
         <div class="card-title" id="scStepTitle">Step 4 of 4 — Social Campaign</div>
-        <div class="card-action" onclick="alert('Draft social posts (demo)')"><span class="emoji">📝</span><span>Draft social posts</span></div>
-        <div class="card-action" onclick="alert('Schedule & publish (demo)')"><span class="emoji">📅</span><span>Schedule & publish</span></div>
+        <div class="card-action" onclick="alert('Draft social posts (demo)')"><span class="emoji">📝</span><span id="socialDraftText">Draft social posts</span></div>
+        <div class="card-action" onclick="alert('Schedule & publish (demo)')"><span class="emoji">📅</span><span id="socialScheduleText">Schedule & publish</span></div>
       </div>
-      <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-teal" onclick="alert('Campaign launched!')">Done ✓</button></div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()" id="socialBackBtn">← Back</button><button class="btn btn-teal" onclick="alert('Campaign launched!')" id="socialDoneBtn">Done ✓</button></div>
     </div>
 
     <div class="agent-panel" id="panel-blackbox">
@@ -302,9 +302,9 @@ function switchLang(code){
     'bbTitle':['AI Black Box','AI 黑箱'],'bbDesc':['Raw reasoning trace.','推理追踪。']};
   for(const[id,v]of Object.entries(T)){const el=document.getElementById(id);if(el)el.textContent=zh?v[1]:v[0]}
   // More i18n
-  const moreIDs=['aPartyBtnText','aOverallBtnText','aGraphBtnText','genFindLegislatorText','genPetitionText','genBackBtn','genNextBtn','genLoadingText','analysisSelectedLabel','analysisBackBtn','analysisNextBtn'];
-  const moreEN=['Analyze party pass rates','Overall pass rate','Generate graph','Find legislator to back it','Collect petition signatures','← Back','Next: Analysis →','Generating...','Analyzing','← Back','Next: Social Campaign →'];
-  const moreZH=['分析政党投票率','整体通过率','生成图表','寻找支持议员','收集请愿签名','← 返回','下一步：分析 →','生成中...','分析中','← 返回','下一步：社媒活动 →'];
+  const moreIDs=['aPartyBtnText','aOverallBtnText','aGraphBtnText','genFindLegislatorText','genPetitionText','genBackBtn','genNextBtn','genLoadingText','analysisSelectedLabel','analysisBackBtn','analysisNextBtn','socialDraftText','socialScheduleText','socialBackBtn','socialDoneBtn'];
+  const moreEN=['Analyze party pass rates','Overall pass rate','Generate graph','Find legislator to back it','Collect petition signatures','← Back','Next: Analysis →','Generating...','Analyzing','← Back','Next: Social Campaign →','Draft social posts','Schedule & publish','← Back','Done ✓'];
+  const moreZH=['分析政党投票率','整体通过率','生成图表','寻找支持议员','收集请愿签名','← 返回','下一步：分析 →','生成中...','分析中','← 返回','下一步：社媒活动 →','起草社媒帖子','安排与发布','← 返回','完成 ✓'];
   moreIDs.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=zh?moreZH[i]:moreEN[i]});
   // Style select
   const ss=document.getElementById('genStyleSelect');
