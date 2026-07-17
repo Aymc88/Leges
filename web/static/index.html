@@ -157,7 +157,7 @@ input,textarea,select{font-family:inherit}
         <input type="text" id="genTopicInput" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;margin-bottom:8px" placeholder="e.g. Community composting">
         <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-primary" onclick="doGenerate()" id="gGenBtn">Generate →</button><select id="genStyleSelect" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px"><option value="standard" data-en="Standard" data-zh="标准">Standard</option><option value="detailed" data-en="Detailed" data-zh="详细">Detailed</option><option value="simple" data-en="Simple" data-zh="简洁">Simple</option></select></div>
         <div id="genPreview" style="border:1px dashed var(--border);border-radius:8px;padding:14px;min-height:50px;margin-bottom:12px;font-size:13px;color:var(--text-secondary);display:none;line-height:1.6;white-space:pre-wrap"></div>
-        <div id="genLoading" style="display:none;text-align:center;padding:12px;font-size:13px;color:var(--text-secondary)">⏳ Generating...</div>
+        <div id="genLoading" style="display:none;text-align:center;padding:12px;font-size:13px;color:var(--text-secondary)">⏳ <span id="genLoadingText" data-en="Generating..." data-zh="生成中...">Generating...</span></div>
         <div class="card-action" onclick="findLegislators()"><span class="emoji">🤝</span> <span id="genFindLegislatorText">Find legislator to back it</span></div>
         <div class="card-action" onclick="startPetition()"><span class="emoji">✍️</span> <span id="genPetitionText">Collect petition signatures</span></div>
       </div>
@@ -179,7 +179,7 @@ input,textarea,select{font-family:inherit}
           </div>
         </div>
         <div id="analysisSelected" style="display:none;margin-bottom:10px;padding:10px 12px;border:1px solid var(--blue);border-radius:8px;background:#f8faff">
-          <div style="font-size:12px;color:var(--text-secondary)">📄 Analyzing</div>
+          <div style="font-size:12px;color:var(--text-secondary)">📄 <span id="analysisSelectedLabel" data-en="Analyzing" data-zh="分析中">Analyzing</span></div>
           <div style="font-weight:600;font-size:14px" id="analysisSelectedTitle"></div>
         </div>
         <div id="chartPlaceholder" style="border:1px dashed var(--border);border-radius:8px;padding:20px;min-height:80px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text-secondary)">📊 Enter a topic or paste bill text, then analyze</div>
@@ -302,9 +302,9 @@ function switchLang(code){
     'bbTitle':['AI Black Box','AI 黑箱'],'bbDesc':['Raw reasoning trace.','推理追踪。']};
   for(const[id,v]of Object.entries(T)){const el=document.getElementById(id);if(el)el.textContent=zh?v[1]:v[0]}
   // More i18n
-  const moreIDs=['aPartyBtnText','aOverallBtnText','aGraphBtnText','genFindLegislatorText','genPetitionText','genBackBtn','genNextBtn'];
-  const moreEN=['Analyze party pass rates','Overall pass rate','Generate graph','Find legislator to back it','Collect petition signatures','← Back','Next: Analysis →'];
-  const moreZH=['分析政党投票率','整体通过率','生成图表','寻找支持议员','收集请愿签名','← 返回','下一步：分析 →'];
+  const moreIDs=['aPartyBtnText','aOverallBtnText','aGraphBtnText','genFindLegislatorText','genPetitionText','genBackBtn','genNextBtn','genLoadingText','analysisSelectedLabel'];
+  const moreEN=['Analyze party pass rates','Overall pass rate','Generate graph','Find legislator to back it','Collect petition signatures','← Back','Next: Analysis →','Generating...','Analyzing'];
+  const moreZH=['分析政党投票率','整体通过率','生成图表','寻找支持议员','收集请愿签名','← 返回','下一步：分析 →','生成中...','分析中'];
   moreIDs.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=zh?moreZH[i]:moreEN[i]});
   // Style select
   const ss=document.getElementById('genStyleSelect');
