@@ -2,7 +2,8 @@
   "builds": [
     {
       "src": "web/routes.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": { "maxDuration": 30 }
     }
   ],
   "routes": [

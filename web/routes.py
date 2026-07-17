@@ -217,9 +217,9 @@ def api_generate(body: GenerateRequest):
 
         if body.analysis:
             if body.lang == "zh":
-                prompt = f"你是一位立法分析师。请分析以下法案主题的通过可能性。\n\n主题: {body.topic}\n\n请给出:\n1. 估计通过率 (0-100%)\n2. 各政党投票倾向\n3. 支持因素 (2-3)\n4. 反对因素 (2-3)\n5. 最适合提出该法案的法域 (加州/香港/澳门) 及原因\n\n简明扼要。"
+                prompt = f"分析该法案通过率(0-100%): {body.topic}\n\n格式:\n加州: XX%\n香港: XX%\n澳门: XX%\n支持因素: ...\n反对因素: ...\n\n一句话,不要多余内容。"
             else:
-                prompt = f"You are a legislative analyst. Analyze passage likelihood for this bill topic.\n\nTopic: {body.topic}\n\nJurisdictions: CA=California(USA), HK=Hong Kong SAR(China), MO=Macau SAR(China). MO is Macau, NOT Missouri.\n\nProvide:\n1. Estimated pass rate (0-100%)\n2. Party breakdown per jurisdiction\n3. Supporting factors (2-3)\n4. Opposing factors (2-3)\n5. Best jurisdiction (CA/HK/MO only) and why\n\nConcise, 4-6 sentences."
+                prompt = f"Analyze pass rate (0-100%) for: {body.topic}\n\nFormat:\nCalifornia: XX%\nHong Kong: XX%\nMacau: XX%\nSupporting: ...\nOpposing: ...\n\nOne sentence each, no extra text."
         elif body.lang == "zh":
             guide = {"standard":"","detailed":"请写得非常详细，每一条款展开，800-1500字。","simple":"请写得简短精炼，200-400字。"}
             prompt = f"你是一位立法助理。请生成一份法案草案。\n\n标题: {body.title or body.topic}\n主题: {body.topic}\n{guide.get(body.style,'')}\n\n结构: 名称、目的、关键条款、实施机制、预期影响。输出中文。"
