@@ -66,9 +66,15 @@ def embed_query_deepseek(query: str) -> list[float] | None:
         pass
     return None
 
+def cosine_similarity(v1: list[float], v2: list[float]) -> float:
+    """纯 Python 余弦相似度"""
+    dot = sum(a*b for a,b in zip(v1,v2))
+    n1 = sum(a*a for a in v1)**0.5
+    n2 = sum(b*b for b in v2)**0.5
+    return dot/(n1*n2) if n1*n2 else 0
+
 def search_local(query: str, top_k: int = 10) -> list[dict]:
     """向量搜索 (Spark: 本地模型 / Vercel: Deepseek API)。"""
-    import numpy as np
     emb, meta = load_embeddings()
     if not len(emb):
         return []
@@ -83,21 +89,15 @@ def search_local(query: str, top_k: int = 10) -> list[dict]:
     # Vercel: 用 Deepseek API (维度可能不同)
     if query_vec is None:
         query_vec = embed_query_deepseek(query)
-        if query_vec and len(query_vec) != emb.shape[1]:
-            query_vec = None  # 维度不匹配,无法向量搜索
+        if query_vec and len(query_vec) != len(emb[0]) if len(emb) else 0:
+            query_vec = None
     if query_vec is None:
         return []
-    q = np.array(query_vec, dtype=np.float32)
-    q_norm = np.linalg.norm(q)
-    if q_norm > 0:
-        q = q / q_norm
-    e_norm = emb / np.linalg.norm(emb, axis=1).reshape(-1, 1)
-    scores = np.dot(e_norm, q)
-    idx = np.argsort(scores)[-top_k * 3:][::-1]
-    results = []
-    for i in idx:
-        results.append({"id": meta[i]["bill_id"], "score": float(scores[i]), "document": meta[i]["title"], "metadata": meta[i]})
-    return results[:top_k]
+    # 纯 Python 余弦相似度
+    scored = [(cosine_similarity(query_vec, emb[i]), meta[i]) for i in range(len(emb))]
+    scored.sort(key=lambda x: -x[0])
+    results = [{"id": m["bill_id"], "score": s, "document": m["title"], "metadata": m} for s,m in scored[:top_k]]
+    return results
 
 def search_deepseek(query: str, top_k: int = 10) -> list[dict]:
     """用 Deepseek Chat 搜索法案 (Vercel 无法向量搜索时的后备方案)。"""
@@ -217,9 +217,9 @@ def api_generate(body: GenerateRequest):
 
         if body.analysis:
             if body.lang == "zh":
-                prompt = f"分析该法案通过率(0-100%): {body.topic}\n\n格式:\n加州: XX%\n香港: XX%\n澳门: XX%\n支持因素: ...\n反对因素: ...\n\n一句话,不要多余内容。"
+                prompt = f"你是一位立法分析师。请分析以下法案主题的通过可能性。\n\n主题: {body.topic}\n\n请给出:\n1. 估计通过率 (0-100%)\n2. 各政党投票倾向\n3. 支持因素 (2-3)\n4. 反对因素 (2-3)\n5. 最适合提出该法案的法域 (加州/香港/澳门) 及原因\n\n简明扼要。"
             else:
-                prompt = f"Analyze pass rate (0-100%) for: {body.topic}\n\nFormat:\nCalifornia: XX%\nHong Kong: XX%\nMacau: XX%\nSupporting: ...\nOpposing: ...\n\nOne sentence each, no extra text."
+                prompt = f"You are a legislative analyst. Analyze passage likelihood for this bill topic.\n\nTopic: {body.topic}\n\nJurisdictions: CA=California(USA), HK=Hong Kong SAR(China), MO=Macau SAR(China). MO is Macau, NOT Missouri.\n\nProvide:\n1. Estimated pass rate (0-100%)\n2. Party breakdown per jurisdiction\n3. Supporting factors (2-3)\n4. Opposing factors (2-3)\n5. Best jurisdiction (CA/HK/MO only) and why\n\nConcise, 4-6 sentences."
         elif body.lang == "zh":
             guide = {"standard":"","detailed":"请写得非常详细，每一条款展开，800-1500字。","simple":"请写得简短精炼，200-400字。"}
             prompt = f"你是一位立法助理。请生成一份法案草案。\n\n标题: {body.title or body.topic}\n主题: {body.topic}\n{guide.get(body.style,'')}\n\n结构: 名称、目的、关键条款、实施机制、预期影响。输出中文。"
