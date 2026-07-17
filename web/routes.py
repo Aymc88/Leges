@@ -49,15 +49,17 @@ def search_keyword(query: str, top_k: int = 10) -> list[dict]:
     try:
         _, meta = load_embeddings()
         if not meta: return []
-        words = query.lower().split()
+        import re
+        # 整词匹配,避免 "cat" 匹配 "education"
+        patterns = [re.compile(r'\b' + re.escape(w) + r's?\b', re.I) for w in query.lower().split()]
         scored = []
         for m in meta:
-            txt = ((m.get("title","") or "") + " " + (m.get("bill_id","") or "")).lower()
-            matches = sum(1 for w in words if w in txt)
-            if matches > 0:
-                scored.append((matches, m))
+            txt = ((m.get("title","") or "") + " " + (m.get("bill_id","") or ""))
+            full_matches = sum(1 for p in patterns if p.search(txt))
+            if full_matches > 0:
+                scored.append((full_matches, m))
         scored.sort(key=lambda x: -x[0])
-        return [{"id": m["bill_id"], "score": s/len(words), "document": m["title"], "metadata": m} for s,m in scored[:top_k]]
+        return [{"id": m["bill_id"], "score": s/len(patterns), "document": m["title"], "metadata": m} for s,m in scored[:top_k]]
     except Exception:
         return []
 
