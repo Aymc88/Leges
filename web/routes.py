@@ -114,44 +114,24 @@ def search_local(query: str, top_k: int = 10) -> list[dict]:
     return results
 
 def search_deepseek(query: str, top_k: int = 10) -> list[dict]:
-    """用 Deepseek Chat 搜索法案 (Vercel 无法向量搜索时的后备方案)。"""
-    import httpx, json as j
-    api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
-    if not api_key:
-        return []
+    """纯关键词搜索法案 — 不依赖 AI，稳定快速。"""
     try:
         _, meta = load_embeddings()
         if not meta:
             return []
-        # 关键词预过滤
         words = query.lower().split()
-        candidates = []
+        scored = []
         for m in meta:
             title = (m.get("title", "") or "").lower()
-            if any(w in title for w in words):
-                candidates.append(m)
-        if not candidates:
-            candidates = meta[:100]
-        candidates = candidates[:40]
-        bills_text = "\n".join([f"{m['bill_id']}|{m['jurisdiction']}|{m['title'][:100]}" for m in candidates])
-        prompt = f"Query: \"{query}\"\n\nFind the most relevant bills from this list. Return ONLY bill IDs as a JSON array.\n\n{bills_text}"
-        base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
-        model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
-        resp = httpx.post(
-            f"{base_url}/messages",
-            json={"model": model, "max_tokens": 300, "messages": [{"role": "user", "content": prompt}]},
-            headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-            timeout=30,
-        )
-        text = "".join(b.get("text","") for b in resp.json().get("content",[]) if b.get("type")=="text")
-        import re
-        bill_ids = re.findall(r'[A-Z]+-\d+|[A-Z]+\d+', text)
-        meta_map = {m["bill_id"]: m for m in candidates}
-        results = []
-        for bid in bill_ids:
-            if bid in meta_map:
-                results.append({"id": bid, "score": 1.0, "document": meta_map[bid]["title"], "metadata": meta_map[bid]})
-        return results[:top_k]
+            # 计算有多少个关键词匹配
+            matches = sum(1 for w in words if w in title)
+            if matches > 0:
+                scored.append((matches, m))
+        # 按匹配数排序
+        scored.sort(key=lambda x: -x[0])
+        results = [{"id": m["bill_id"], "score": s / len(words), "document": m["title"], "metadata": m}
+                   for s, m in scored[:top_k]]
+        return results
     except Exception:
         return []
 
