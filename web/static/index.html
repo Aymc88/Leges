@@ -187,7 +187,7 @@ input,textarea,select{font-family:inherit}
         <div class="card-action" onclick="loadOverallPassRate()" id="aOverallBtn"><span class="emoji">📈</span> <span id="aOverallBtnText">Overall pass rate</span></div>
         <div class="card-action" onclick="generateGraph()" id="aGraphBtn"><span class="emoji">📊</span> <span id="aGraphBtnText">Generate graph</span></div>
       </div>
-      <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next: Social Campaign →</button></div>
+      <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()" id="analysisBackBtn">← Back</button><button class="btn btn-primary" onclick="nextStep()" id="analysisNextBtn">Next: Social Campaign →</button></div>
     </div>
 
     <div class="agent-panel" id="panel-social">
@@ -302,9 +302,9 @@ function switchLang(code){
     'bbTitle':['AI Black Box','AI 黑箱'],'bbDesc':['Raw reasoning trace.','推理追踪。']};
   for(const[id,v]of Object.entries(T)){const el=document.getElementById(id);if(el)el.textContent=zh?v[1]:v[0]}
   // More i18n
-  const moreIDs=['aPartyBtnText','aOverallBtnText','aGraphBtnText','genFindLegislatorText','genPetitionText','genBackBtn','genNextBtn','genLoadingText','analysisSelectedLabel'];
-  const moreEN=['Analyze party pass rates','Overall pass rate','Generate graph','Find legislator to back it','Collect petition signatures','← Back','Next: Analysis →','Generating...','Analyzing'];
-  const moreZH=['分析政党投票率','整体通过率','生成图表','寻找支持议员','收集请愿签名','← 返回','下一步：分析 →','生成中...','分析中'];
+  const moreIDs=['aPartyBtnText','aOverallBtnText','aGraphBtnText','genFindLegislatorText','genPetitionText','genBackBtn','genNextBtn','genLoadingText','analysisSelectedLabel','analysisBackBtn','analysisNextBtn'];
+  const moreEN=['Analyze party pass rates','Overall pass rate','Generate graph','Find legislator to back it','Collect petition signatures','← Back','Next: Analysis →','Generating...','Analyzing','← Back','Next: Social Campaign →'];
+  const moreZH=['分析政党投票率','整体通过率','生成图表','寻找支持议员','收集请愿签名','← 返回','下一步：分析 →','生成中...','分析中','← 返回','下一步：社媒活动 →'];
   moreIDs.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=zh?moreZH[i]:moreEN[i]});
   // Style select
   const ss=document.getElementById('genStyleSelect');
