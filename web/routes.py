@@ -112,9 +112,8 @@ def api_search(body: SearchRequest):
                     if text: query = text.split('\n')[0].strip('"\'')
             except Exception:
                 pass
-        # 中文搜全部,否则按预设过滤
-        is_cn = body.query != query
-        jur_set = {body.jurisdiction} if body.jurisdiction else ({"CA","HK","MO"} if is_cn else set(j.code for j in get_active_config().jurisdictions or []))
+        # 按预设过滤
+        jur_set = {body.jurisdiction} if body.jurisdiction else set(j.code for j in get_active_config().jurisdictions or [])
         results = search_keyword(query, body.top_k * 2)
         results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set] if jur_set else results
         return {"results": results[:body.top_k], "query": body.query}
