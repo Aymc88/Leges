@@ -181,9 +181,12 @@ def api_health():
 def api_search(body: SearchRequest):
     try:
         # 按法域过滤(默认按预设)
-        results = search_deepseek(body.query, body.top_k)
-        if body.jurisdiction:
-            results = [r for r in results if r.get("metadata",{}).get("jurisdiction") == body.jurisdiction]
+        # 按预设过滤(前端未指定法域时)
+        cfg = get_active_config()
+        default_jurs = set(j.code for j in cfg.jurisdictions) if cfg.jurisdictions else {"CA", "HK", "MO"}
+        jur_set = {body.jurisdiction} if body.jurisdiction else default_jurs
+        results = search_deepseek(body.query, body.top_k * 2)
+        results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set]
         return {"results": results[:body.top_k], "query": body.query}
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
