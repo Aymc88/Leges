@@ -97,10 +97,26 @@ def api_health():
 @app.post("/api/search")
 def api_search(body: SearchRequest):
     try:
+        query = body.query
+        # 如果查询含中文,先翻译成英文
+        import re as _re
+        if _re.search(r'[一-鿿]', query):
+            try:
+                import httpx, os
+                api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
+                base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
+                model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
+                if api_key:
+                    resp = httpx.post(f"{base_url}/messages", headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+                        json={"model": model, "max_tokens": 100, "messages": [{"role": "user", "content": f"Translate this to English (only the translation): {query}"}]}, timeout=15)
+                    text = "".join(b.get("text","") for b in resp.json().get("content",[]) if b.get("type")=="text")
+                    if text: query = text.strip()
+            except Exception:
+                pass
         cfg = get_active_config()
         default_jurs = set(j.code for j in cfg.jurisdictions) if cfg.jurisdictions else {"CA","HK","MO"}
         jur_set = {body.jurisdiction} if body.jurisdiction else default_jurs
-        results = search_keyword(body.query, body.top_k * 2)
+        results = search_keyword(query, body.top_k * 2)
         results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set]
         return {"results": results[:body.top_k], "query": body.query}
     except Exception as e:
