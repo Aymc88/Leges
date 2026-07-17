@@ -451,15 +451,8 @@ function getAnalysisTopic(){
   return _analysisTopic;
 }
 async function loadPassRateAnalysis(){
-  const topic=getAnalysisTopic();
-  if(!topic){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
-  const ph=document.getElementById('chartPlaceholder');ph.innerHTML='⏳ '+(STATE.lang==='zh-Hans'?'AI 分析中...':'Analyzing...');ph.style.textAlign='center';
-  try{
-    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:STATE.lang==='zh-Hans'?'zh':'en',analysis:true})});
-    const d=await r.json();
-    if(d.generated) ph.innerHTML='🏛️ <b>'+esc(topic)+'</b><br><br>'+d.generated.replace(/\n/g,'<br>');
-    else ph.innerHTML='⚠️ AI analysis unavailable.';
-  }catch(e){ph.innerHTML='⚠️ Error: '+e.message;}
+  if(!getAnalysisTopic()){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
+  generateGraph();
 }
 async function generateGraph(){
   const topic=getAnalysisTopic()||'all bills';
