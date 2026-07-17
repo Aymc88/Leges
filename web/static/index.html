@@ -460,14 +460,17 @@ async function generateGraph(){
   try{
     const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:zh?'zh':'en',analysis:true})});
     const d=await r.json();const aiText=d.generated||'';
-    const rateMatch=aiText.match(/(\d+)(%)/);const aiRate=rateMatch?Math.min(parseInt(rateMatch[1]),100):50;
+    // 从 AI 文本中提取各法域的通过率
+    function extractRate(txt,labels){const r={};labels.forEach(l=>{const m=txt.match(new RegExp(l+':?\\s*(\\d+)(\\s*%|percent)','i'));if(m)r[l]=Math.min(parseInt(m[1]),100)});return r}
+    const jLabels={CA:['California','加州','CA'],HK:['Hong Kong','香港','HK'],MO:['Macau','澳门','MO']};
+    const rates={};Object.entries(jLabels).forEach(([code,labels])=>{const v=extractRate(aiText,labels);const found=labels.find(l=>v[l]!==undefined);if(found)rates[code]=v[found]});
     let html='<div style="font-weight:700;font-size:14px;margin-bottom:8px">📊 '+esc(topic)+'</div>'+(aiText?'<div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">'+aiText.replace(/\n/g,'<br>')+'</div>':'');
     html+='<div style="font-size:13px;font-weight:600;margin-bottom:8px">'+(zh?'AI 预测通过率':'AI estimated pass rate')+'</div>';
     jurList.forEach(j=>{
-      const c=jcolors[j]||'#64748b';
+      const c=jcolors[j]||'#64748b';const r=rates[j]||50;
       html+='<div style="margin:8px 0"><div style="font-weight:600;font-size:13px;margin-bottom:4px">'+(j==='CA'?'🇺🇸 CA':j==='HK'?'🇭🇰 HK':'🇲🇴 MO')+'</div>';
-      html+='<div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:24px;background:var(--bg);border-radius:6px;overflow:hidden"><div style="width:'+aiRate+'%;height:100%;background:'+c+';border-radius:6px"></div></div>';
-      html+='<span style="font-size:14px;font-weight:700;min-width:50px;text-align:right;color:'+c+'">'+aiRate+'%</span></div></div>';
+      html+='<div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:24px;background:var(--bg);border-radius:6px;overflow:hidden"><div style="width:'+r+'%;height:100%;background:'+c+';border-radius:6px"></div></div>';
+      html+='<span style="font-size:14px;font-weight:700;min-width:50px;text-align:right;color:'+c+'">'+r+'%</span></div></div>';
     });
     ph.innerHTML=html;ph.style.textAlign='left';
   }catch(e){ph.innerHTML='⚠️ Error: '+e.message;ph.style.textAlign='center';}
