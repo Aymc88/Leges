@@ -114,7 +114,7 @@ def search_local(query: str, top_k: int = 10) -> list[dict]:
     return results
 
 def search_deepseek(query: str, top_k: int = 10) -> list[dict]:
-    """纯关键词搜索法案 — 不依赖 AI，稳定快速。"""
+    """纯关键词搜索法案 — 搜标题和ID，稳定快速。"""
     try:
         _, meta = load_embeddings()
         if not meta:
@@ -122,9 +122,8 @@ def search_deepseek(query: str, top_k: int = 10) -> list[dict]:
         words = query.lower().split()
         scored = []
         for m in meta:
-            title = (m.get("title", "") or "").lower()
-            # 计算有多少个关键词匹配
-            matches = sum(1 for w in words if w in title)
+            search_text = ((m.get("title", "") or "") + " " + (m.get("bill_id", "") or "")).lower()
+            matches = sum(1 for w in words if w in search_text)
             if matches > 0:
                 scored.append((matches, m))
         # 按匹配数排序
@@ -182,14 +181,9 @@ def api_health():
 def api_search(body: SearchRequest):
     try:
         # 按法域过滤(默认按预设)
+        results = search_deepseek(body.query, body.top_k)
         if body.jurisdiction:
-            jur_set = {body.jurisdiction}
-        else:
-            cfg = get_active_config()
-            jur_set = set(j.code for j in cfg.jurisdictions) if cfg.jurisdictions else {"CA", "HK", "MO"}
-
-        results = search_deepseek(body.query, body.top_k * 2)
-        results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set]
+            results = [r for r in results if r.get("metadata",{}).get("jurisdiction") == body.jurisdiction]
         return {"results": results[:body.top_k], "query": body.query}
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
