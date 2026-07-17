@@ -193,7 +193,7 @@ def api_set_preset(body: PresetSwitch):
 @app.get("/api/health")
 def api_health():
     emb, meta = load_embeddings()
-    return {"status": "ok", "mode": "spark+deepseek", "embeddings": len(emb) if emb else 0, "metadata": len(meta)}
+    return {"status": "ok", "mode": "spark+deepseek", "embeddings": len(emb) if emb is not None and len(emb) else 0, "metadata": len(meta)}
 
 # ── API: 搜索 ──
 @app.post("/api/search")
@@ -232,7 +232,7 @@ def api_generate(body: GenerateRequest):
                 if body.lang == "zh":
                     prompt = f"分析政党投票率: {body.topic}\n\n加州: 民主党%? 共和党%?\n香港: 建制派%? 民主派%?\n澳门: 亲政府%? 民主派%?\n\n每行一个数字。"
                 else:
-                    prompt = f"Party vote analysis for: {body.topic}\n\nCA: Democrats?% Republicans?%\nHK: Pro-establishment?% Democrats?%\nMO: Pro-govt?% Others?%\n\nOne line per jurisdiction."
+                    prompt = f"Party vote analysis for: {body.topic}\n\nCA: Democrats XX% Republicans XX%\nHK: Pro-establishment XX% Democrats XX%\nMO: Pro-govt XX% Others XX%\n\nOne line per jurisdiction, replace XX with numbers."
             elif body.lang == "zh":
                 prompt = f"你是一位立法分析师。请分析以下法案主题的通过可能性。\n\n主题: {body.topic}\n\n请给出:\n1. 估计通过率 (0-100%)\n2. 各政党投票倾向\n3. 支持因素 (2-3)\n4. 反对因素 (2-3)\n5. 最适合提出该法案的法域 (加州/香港/澳门) 及原因\n\n简明扼要。"
             else:
