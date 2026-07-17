@@ -453,7 +453,7 @@ async function loadPassRateAnalysis(){
   const topic=getAnalysisTopic();if(!topic){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
   const ph=document.getElementById('chartPlaceholder');const zh=STATE.lang==='zh-Hans';ph.innerHTML='⏳ '+(zh?'分析政党投票倾向...':'Analyzing party votes...');
   try{
-    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:zh?'zh':'en',analysis:true})});
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'party',lang:zh?'zh':'en',analysis:true})});
     const d=await r.json();const t=d.generated||'';
     ph.innerHTML='🏛️ <b>'+esc(topic)+'</b><br><br>'+t.replace(/\n/g,'<br>');
   }catch(e){ph.innerHTML='⚠️ Error: '+e.message;}

@@ -228,7 +228,12 @@ def api_generate(body: GenerateRequest):
             return JSONResponse({"error": "API not configured"}, status_code=500)
 
         if body.analysis:
-            if body.lang == "zh":
+            if body.style == "party":
+                if body.lang == "zh":
+                    prompt = f"分析政党投票率: {body.topic}\n\n加州: 民主党%? 共和党%?\n香港: 建制派%? 民主派%?\n澳门: 亲政府%? 民主派%?\n\n每行一个数字。"
+                else:
+                    prompt = f"Party vote analysis for: {body.topic}\n\nCA: Democrats?% Republicans?%\nHK: Pro-establishment?% Democrats?%\nMO: Pro-govt?% Others?%\n\nOne line per jurisdiction."
+            elif body.lang == "zh":
                 prompt = f"你是一位立法分析师。请分析以下法案主题的通过可能性。\n\n主题: {body.topic}\n\n请给出:\n1. 估计通过率 (0-100%)\n2. 各政党投票倾向\n3. 支持因素 (2-3)\n4. 反对因素 (2-3)\n5. 最适合提出该法案的法域 (加州/香港/澳门) 及原因\n\n简明扼要。"
             else:
                 prompt = f"You are a legislative analyst. Analyze passage likelihood for this bill topic.\n\nTopic: {body.topic}\n\nJurisdictions: CA=California(USA), HK=Hong Kong SAR(China), MO=Macau SAR(China). MO is Macau, NOT Missouri.\n\nProvide:\n1. Estimated pass rate (0-100%)\n2. Party breakdown per jurisdiction\n3. Supporting factors (2-3)\n4. Opposing factors (2-3)\n5. Best jurisdiction (CA/HK/MO only) and why\n\nConcise, 4-6 sentences."
