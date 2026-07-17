@@ -135,13 +135,15 @@ def search_deepseek(query: str, top_k: int = 10) -> list[dict]:
         candidates = candidates[:40]
         bills_text = "\n".join([f"{m['bill_id']}|{m['jurisdiction']}|{m['title'][:100]}" for m in candidates])
         prompt = f"Query: \"{query}\"\n\nFind the most relevant bills from this list. Return ONLY bill IDs as a JSON array.\n\n{bills_text}"
+        base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
+        model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
         resp = httpx.post(
-            "https://api.deepseek.com/chat/completions",
-            json={"model": "deepseek-chat", "messages": [{"role": "user", "content": prompt}], "max_tokens": 300},
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            f"{base_url}/messages",
+            json={"model": model, "max_tokens": 300, "messages": [{"role": "user", "content": prompt}]},
+            headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
             timeout=30,
         )
-        text = resp.json().get("choices", [{}])[0].get("message", {}).get("content", "")
+        text = "".join(b.get("text","") for b in resp.json().get("content",[]) if b.get("type")=="text")
         import re
         bill_ids = re.findall(r'[A-Z]+-\d+|[A-Z]+\d+', text)
         meta_map = {m["bill_id"]: m for m in candidates}
@@ -206,7 +208,7 @@ def api_search(body: SearchRequest):
             cfg = get_active_config()
             jur_set = set(j.code for j in cfg.jurisdictions) if cfg.jurisdictions else {"CA", "HK", "MO"}
 
-        results = search_deepseek(body.query, body.top_k)
+        results = search_deepseek(body.query, body.top_k * 2)
         results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set]
         return {"results": results[:body.top_k], "query": body.query}
     except Exception as e:
