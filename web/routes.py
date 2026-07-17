@@ -94,6 +94,13 @@ def api_health():
     emb, meta = load_embeddings()
     return {"status": "ok", "mode": "spark+deepseek", "embeddings": len(emb) if (emb is not None and len(emb)) else 0, "metadata": len(meta)}
 
+@app.get("/api/debug")
+def api_debug():
+    """Debug search - test search_keyword directly"""
+    from web.routes import search_keyword
+    results = search_keyword("cat", 10)
+    return {"count": len(results), "results": [{"id": r["id"], "jur": r["metadata"]["jurisdiction"], "title": r["metadata"]["title"][:50]} for r in results[:5]]}
+
 @app.post("/api/search")
 def api_search(body: SearchRequest):
     try:
@@ -102,7 +109,7 @@ def api_search(body: SearchRequest):
         if not query.isascii():
             try:
                 import httpx, os
-                api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
+                api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
                 base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
                 model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
                 if api_key:
@@ -114,7 +121,7 @@ def api_search(body: SearchRequest):
                 pass
         # 按预设过滤
         jur_set = {body.jurisdiction} if body.jurisdiction else set(j.code for j in get_active_config().jurisdictions or [])
-        results = search_keyword(query, body.top_k * 2)
+        results = search_keyword(query, body.top_k * 10)  # 多搜一些,确保覆盖预设过滤
         results = [r for r in results if r.get("metadata",{}).get("jurisdiction") in jur_set] if jur_set else results
         return {"results": results[:body.top_k], "query": body.query}
     except Exception as e:
@@ -127,7 +134,7 @@ class GenerateRequest(BaseModel):
 def api_generate(body: GenerateRequest):
     try:
         import httpx, os
-        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
         base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
         model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
         if not api_key:
@@ -163,7 +170,7 @@ class LegislatorRequest(BaseModel):
 def api_legislators(body: LegislatorRequest):
     try:
         import httpx, json, re, os
-        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
         base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
         model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
         jn = {"CA":"California","HK":"Hong Kong","MO":"Macau"}
@@ -227,7 +234,7 @@ def api_translate(body: TranslateRequest):
     """批量翻译英文法案标题为中文。"""
     try:
         import httpx, os
-        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
         base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
         model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
         texts = body.texts[:20]
