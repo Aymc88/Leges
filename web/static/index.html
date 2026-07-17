@@ -175,7 +175,7 @@ input,textarea,select{font-family:inherit}
                  style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--surface)"
                  onkeydown="if(event.key==='Enter')analysisUseTopic()">
           <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="btn btn-primary" onclick="analysisUseTopic()" id="aUseBtn">Analyze →</button>
+            <button class="btn btn-primary" id="aUseBtn">Analyze →</button>
           </div>
         </div>
         <div id="analysisSelected" style="display:none;margin-bottom:10px;padding:10px 12px;border:1px solid var(--blue);border-radius:8px;background:#f8faff">
@@ -183,9 +183,9 @@ input,textarea,select{font-family:inherit}
           <div style="font-weight:600;font-size:14px" id="analysisSelectedTitle"></div>
         </div>
         <div id="chartPlaceholder" style="border:1px dashed var(--border);border-radius:8px;padding:20px;min-height:80px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text-secondary)">📊 Enter a topic or paste bill text, then analyze</div>
-        <div class="card-action" onclick="loadPassRateAnalysis()" id="aPartyBtn"><span class="emoji">🏛️</span> <span>Analyze party pass rates</span></div>
-        <div class="card-action" onclick="loadOverallPassRate()" id="aOverallBtn"><span class="emoji">📈</span> <span>Overall pass rate</span></div>
-        <div class="card-action" onclick="generateGraph()"><span class="emoji">📊</span> <span>Generate graph</span></div>
+        <div class="card-action" id="aPartyBtn"><span class="emoji">🏛️</span> <span>Analyze party pass rates</span></div>
+        <div class="card-action" id="aOverallBtn"><span class="emoji">📈</span> <span>Overall pass rate</span></div>
+        <div class="card-action" id="aGraphBtn"><span class="emoji">📊</span> <span>Generate graph</span></div>
       </div>
       <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()">← Back</button><button class="btn btn-primary" onclick="nextStep()">Next: Social Campaign →</button></div>
     </div>
@@ -450,7 +450,13 @@ function getAnalysisTopic(){
   return _analysisTopic;
 }
 async function loadPassRateAnalysis(){
-  generateGraph();
+  const topic=getAnalysisTopic();if(!topic){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
+  const ph=document.getElementById('chartPlaceholder');const zh=STATE.lang==='zh-Hans';ph.innerHTML='⏳ '+(zh?'分析政党投票倾向...':'Analyzing party votes...');
+  try{
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:zh?'zh':'en',analysis:true})});
+    const d=await r.json();const t=d.generated||'';
+    ph.innerHTML='🏛️ <b>'+esc(topic)+'</b><br><br>'+t.replace(/\n/g,'<br>');
+  }catch(e){ph.innerHTML='⚠️ Error: '+e.message;}
 }
 async function generateGraph(){
   const topic=getAnalysisTopic()||'all bills';
@@ -478,7 +484,13 @@ async function generateGraph(){
 }
 
 async function loadOverallPassRate(){
-  generateGraph();
+  const topic=getAnalysisTopic();if(!topic){alert(STATE.lang==='zh-Hans'?'请先输入主题':'Enter a topic first');return}
+  const ph=document.getElementById('chartPlaceholder');const zh=STATE.lang==='zh-Hans';ph.innerHTML='⏳ '+(zh?'分析通过率...':'Analyzing pass rate...');
+  try{
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:zh?'zh':'en',analysis:true})});
+    const d=await r.json();const t=d.generated||'';
+    ph.innerHTML='📈 <b>'+esc(topic)+'</b><br><br>'+t.replace(/\n/g,'<br>');
+  }catch(e){ph.innerHTML='⚠️ Error: '+e.message;}
 }
 // ── Petition ──
 
