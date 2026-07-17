@@ -4,9 +4,6 @@
       "maxDuration": 30
     }
   },
-  "builds": [
-    { "src": "web/routes.py", "use": "@vercel/python" }
-  ],
   "routes": [
     { "src": "/static/(.*)", "dest": "web/routes.py" },
     { "src": "/(.*)", "dest": "web/routes.py" }
