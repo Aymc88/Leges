@@ -1,5 +1,9 @@
 # 小律提案：AI为AI立法
 
+<p align="center">
+  <img src="logo.png" width="120" alt="Leges Logo">
+</p>
+
 ### Leges: One lex at a time
 
 > **AI 帮 AI 立法 —— 让机器 24 小时不停为机器起草法案**
