@@ -18,7 +18,7 @@ input,textarea,select{font-family:inherit}
 .sidebar{position:fixed;top:0;left:0;z-index:95;width:var(--sidebar-w);height:100vh;background:var(--sidebar-bg);color:rgba(255,255,255,.85);display:none;flex-direction:column}
 .sidebar.open{display:flex}
 .sidebar-brand{display:flex;align-items:center;gap:10px;padding:20px 16px 24px;font-size:18px;font-weight:800;border-bottom:1px solid rgba(255,255,255,.08)}
-.sidebar-brand .icon{width:30px;height:30px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0}
+.sidebar-brand .icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .sidebar-nav{display:flex;flex-direction:column;padding:12px 8px;gap:2px;flex:1}
 .sidebar-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:8px;font-size:14px;font-weight:500;color:rgba(255,255,255,.65);border:none;background:transparent;text-align:left;transition:all .1s}
 .sidebar-item:hover{background:var(--sidebar-hover);color:#fff}
@@ -306,11 +306,7 @@ async function init(){
     // Set initial sidebar icon based on preset
     const pkey=document.getElementById('presetSelect').value;
     if(pkey==='california'){
-      const icon=document.getElementById('sidebarIcon');
-      icon.innerHTML='<span style="font-size:18px;font-weight:800">L</span>';
-      icon.style.background='var(--blue)';icon.style.color='#fff';
-      icon.style.display='flex';icon.style.alignItems='center';icon.style.justifyContent='center';
-      icon.style.width='30px';icon.style.height='30px';icon.style.borderRadius='8px';
+      document.getElementById('sidebarIcon').innerHTML='<img src="/static/logo-en.png" style="width:30px;height:30px;border-radius:8px" alt="L">';
     }
     console.log('Init complete');
   }catch(e){console.warn('Init error:',e);try{renderDashGrid()}catch(e2){console.warn('Fallback failed:',e2)}}
@@ -430,16 +426,7 @@ async function switchPreset(key){
   const icon=document.getElementById('sidebarIcon');
   if(icon){
     if(key==='california'){
-      icon.innerHTML='<span style="font-size:18px;font-weight:800">L</span>';
-      icon.style.background='';
-      icon.style.display='flex';
-      icon.style.alignItems='center';
-      icon.style.justifyContent='center';
-      icon.style.width='30px';
-      icon.style.height='30px';
-      icon.style.borderRadius='8px';
-      icon.style.background='var(--blue)';
-      icon.style.color='#fff';
+      icon.innerHTML='<img src="/static/logo-en.png" style="width:30px;height:30px;border-radius:8px" alt="L">';
     } else {
       icon.innerHTML='<img src="/static/logo.png" style="width:30px;height:30px;border-radius:8px" alt="L">';
       icon.style.background='';
