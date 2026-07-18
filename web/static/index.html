@@ -99,7 +99,7 @@ input,textarea,select{font-family:inherit}
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-brand">
-    <div class="icon">L</div>
+    <div class="icon" id="sidebarIcon"><span style="font-size:18px;font-weight:800">L</span></div>
     <span class="brand-text">Leges</span>
   </div>
   <nav class="sidebar-nav">
@@ -303,6 +303,15 @@ async function init(){
     for(const[k,p]of Object.entries(d.presets)){const o=document.createElement('option');o.value=k;o.text=p.label_en;if(k===d.active)o.selected=true;ps.appendChild(o)}}
     renderDashGrid();
     switchLang('en');
+    // Set initial sidebar icon based on preset
+    const pkey=document.getElementById('presetSelect').value;
+    if(pkey==='california'){
+      const icon=document.getElementById('sidebarIcon');
+      icon.innerHTML='<span style="font-size:18px;font-weight:800">L</span>';
+      icon.style.background='var(--blue)';icon.style.color='#fff';
+      icon.style.display='flex';icon.style.alignItems='center';icon.style.justifyContent='center';
+      icon.style.width='30px';icon.style.height='30px';icon.style.borderRadius='8px';
+    }
     console.log('Init complete');
   }catch(e){console.warn('Init error:',e);try{renderDashGrid()}catch(e2){console.warn('Fallback failed:',e2)}}
 }
@@ -416,6 +425,25 @@ async function switchPreset(key){
     if(key==='california')jurSel.value='CA';
     else if(key==='hackathon'||key==='china')jurSel.value='';
     else jurSel.value='';
+  }
+  // 切换 Logo — Hackathon/China 显示中文 Logo，加州显示文字
+  const icon=document.getElementById('sidebarIcon');
+  if(icon){
+    if(key==='california'){
+      icon.innerHTML='<span style="font-size:18px;font-weight:800">L</span>';
+      icon.style.background='';
+      icon.style.display='flex';
+      icon.style.alignItems='center';
+      icon.style.justifyContent='center';
+      icon.style.width='30px';
+      icon.style.height='30px';
+      icon.style.borderRadius='8px';
+      icon.style.background='var(--blue)';
+      icon.style.color='#fff';
+    } else {
+      icon.innerHTML='<img src="/static/logo.png" style="width:30px;height:30px;border-radius:8px" alt="L">';
+      icon.style.background='';
+    }
   }
 }
 
