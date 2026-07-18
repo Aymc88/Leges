@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>小律提案 · Bill Machine</title>
+<title>Leges · Bill Machine</title>
 <style>
-:root{--sidebar-w:220px;--sidebar-bg:#0f172a;--sidebar-hover:#1e293b;--sidebar-active:#2563eb;--surface:#fff;--bg:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--text-secondary:#64748b;--blue:#2563eb;--teal:#14b8a6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.06);--font:system-ui,-apple-system,sans-serif}
+:root{--sidebar-w:220px;--sidebar-bg:#2A0E2E;--sidebar-hover:#44204A;--sidebar-active:#DDA77B;--surface:#44204A;--bg:#37123C;--border:#523757;--text:#D1CCC7;--text-secondary:#A9989E;--blue:#DDA77B;--teal:#945D5E;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.3);--font:system-ui,-apple-system,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;display:flex;min-height:100vh}
 button{cursor:pointer;font-family:inherit}
@@ -44,7 +44,7 @@ input,textarea,select{font-family:inherit}
 .card+.card{margin-top:12px}
 .card-title{font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
 .card-action{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px dashed var(--border);border-radius:8px;cursor:pointer;transition:all .1s;margin-bottom:6px;font-size:13px}
-.card-action:hover{border-color:var(--blue);background:#f8faff}
+.card-action:hover{border-color:var(--blue);background:rgba(221,167,123,.08)}
 .card-action .emoji{font-size:15px;width:22px;text-align:center;flex-shrink:0}
 
 .search-row,.dash-search{display:flex;gap:8px;margin-bottom:16px}
@@ -54,9 +54,9 @@ input,textarea,select{font-family:inherit}
 .search-row button:hover,.dash-search button:hover{opacity:.9}
 
 .step-progress{display:flex;gap:6px;margin-bottom:20px}
-.step-dot{flex:1;height:5px;border-radius:3px;background:#e2e8f0}
+.step-dot{flex:1;height:5px;border-radius:3px;background:var(--blue)}
 .step-dot.active{background:var(--blue)}
-.step-dot.done{background:#1a1a1a}
+.step-dot.done{background:var(--blue)}
 
 .btn{padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;border:none}
 .btn-primary{background:var(--blue);color:#fff}
@@ -68,7 +68,7 @@ input,textarea,select{font-family:inherit}
 
 .dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .dash-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;cursor:pointer;transition:all .12s;box-shadow:var(--shadow)}
-.dash-card:hover{border-color:var(--blue);box-shadow:0 3px 12px rgba(0,0,0,.08);transform:translateY(-1px)}
+.dash-card:hover{border-color:var(--blue);box-shadow:0 3px 12px rgba(0,0,0,.25);transform:translateY(-1px)}
 .dash-card .dc-icon{width:44px;height:44px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px}
 .dash-card .dc-label{font-size:15px;font-weight:600}
 .dash-card .dc-desc{font-size:12px;color:var(--text-secondary)}
@@ -77,11 +77,19 @@ input,textarea,select{font-family:inherit}
 .search-result:hover{border-color:var(--blue)}
 .sr-title{font-weight:600;font-size:14px;margin-bottom:2px}
 .sr-meta{font-size:12px;color:var(--text-secondary);margin-bottom:6px}
-.sr-bar{height:4px;border-radius:3px;background:var(--bg);overflow:hidden}
-.sr-bar-fill{height:100%;border-radius:3px;background:var(--teal);transition:width .3s}
+.sr-bar{height:4px;border-radius:3px;background:var(--border);overflow:hidden}
+.sr-bar-fill{height:100%;border-radius:3px;background:#DDA77B;transition:width .3s}
 
 .loading{text-align:center;padding:40px;color:var(--text-secondary)}
 @media(max-width:768px){.main-content{padding:50px 12px 16px}.dash-grid{grid-template-columns:1fr}}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+.bb-card{animation:fadeSlideIn .35s ease}
+
+/* Override all input colors — must be last to win cascade */
+.main-content input,.main-content select,.main-content textarea{background:#fff!important;color:#37123C!important}
+.main-content ::placeholder{color:#6B5F63!important;opacity:1!important}
+.main-content select option{background:#fff;color:#37123C}
+.sidebar-footer select{background:rgba(255,255,255,.1)!important}
 </style>
 </head>
 <body>
@@ -91,7 +99,7 @@ input,textarea,select{font-family:inherit}
 <div class="sidebar" id="sidebar">
   <div class="sidebar-brand">
     <div class="icon">L</div>
-    <span class="brand-text">小律提案</span>
+    <span class="brand-text">Leges</span>
   </div>
   <nav class="sidebar-nav">
     <button class="sidebar-item" data-agent="dashboard"><span class="emoji">🏠</span><span class="label">Dashboard</span></button>
@@ -110,14 +118,14 @@ input,textarea,select{font-family:inherit}
 
 <div class="main">
   <div class="main-header">
-    <button id="menuBtn" onclick="toggleSidebar()" style="background:none;border:none;font-size:20px;padding:4px 8px;cursor:pointer">☰</button>
+    <button id="menuBtn" onclick="toggleSidebar()" style="background:none;border:none;font-size:20px;padding:4px 8px;cursor:pointer;color:#DDA77B">☰</button>
     <h2 id="agentTitle" style="flex:1">Dashboard</h2>
     <span class="model-tag" id="agentModel"></span>
   </div>
   <div class="main-content" id="mainContent">
 
     <div class="agent-panel active" id="panel-dashboard">
-      <h1 id="dashTitle">小律提案 · Bill Machine</h1>
+      <h1 id="dashTitle">Leges · Bill Machine</h1>
       <p class="desc" id="dashDesc">Select an agent to get started.</p>
       <div class="dash-search"><input type="text" id="dashSearchInput" placeholder="Search..." onkeydown="if(event.key==='Enter')dashSearch()"><button onclick="dashSearch()">Search</button></div>
       <div id="dashResults" style="margin-bottom:16px"></div>
@@ -136,7 +144,7 @@ input,textarea,select{font-family:inherit}
       <div class="card"><div class="card-title" id="sQueryTitle">Search Query</div>
         <div class="search-row"><input type="text" id="agentSearchInput" placeholder="Search..." onkeydown="if(event.key==='Enter')agentSearch()"><button onclick="agentSearch()" id="sSearchBtn">Search</button></div>
         <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-          <select id="searchJurFilter" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--surface)">
+          <select id="searchJurFilter" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px">
             <option value="">All jurisdictions</option>
             <option value="HK">🇭🇰 Hong Kong</option>
             <option value="MO">🇲🇴 Macau</option>
@@ -172,7 +180,7 @@ input,textarea,select{font-family:inherit}
         <div class="card-title" id="aStepTitle">Step 3 of 4 — Analysis</div>
         <div style="margin-bottom:10px">
           <input type="text" id="analysisTopicInput" placeholder="Type a topic or paste your bill text..."
-                 style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--surface)"
+                 style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px"
                  onkeydown="if(event.key==='Enter')analysisUseTopic()">
           <div style="display:flex;gap:8px;margin-top:8px">
             <button class="btn btn-primary" onclick="analysisUseTopic()" id="aUseBtn">Analyze →</button>
@@ -194,18 +202,79 @@ input,textarea,select{font-family:inherit}
       <h1 id="scTitle">Spread the word</h1>
       <p class="desc" id="scDesc">Draft and publish social campaigns.</p>
       <div class="step-progress"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
+
+      <!-- Topic Input -->
       <div class="card">
         <div class="card-title" id="scStepTitle">Step 4 of 4 — Social Campaign</div>
-        <div class="card-action" onclick="alert('Draft social posts (demo)')"><span class="emoji">📝</span><span id="socialDraftText">Draft social posts</span></div>
-        <div class="card-action" onclick="alert('Schedule & publish (demo)')"><span class="emoji">📅</span><span id="socialScheduleText">Schedule & publish</span></div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input type="text" id="socialTopicInput" style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px" data-en="Bill topic" data-zh="法案主题">
+          <button class="btn btn-primary" onclick="genSocialPosts()" id="socialGenBtn" data-en="Generate Posts →" data-zh="生成帖子 →">Generate Posts →</button>
+        </div>
+        <!-- Petition context -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;padding:8px 10px;background:var(--bg);border-radius:8px;font-size:12px">
+          <input type="text" id="socialBillTitle" style="flex:2;min-width:120px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px" data-en="Bill title" data-zh="法案标题">
+          <span style="display:flex;align-items:center;gap:4px;white-space:nowrap"><span style="color:var(--text-secondary)">🎯</span><input type="number" id="socialPetitionGoal" style="width:70px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px" data-en="Goal" data-zh="目标" value="2000"><span id="socialGoalLabel" style="color:var(--text-secondary);font-size:11px" data-en="goal" data-zh="目标">goal</span></span>
+          <span style="display:flex;align-items:center;gap:4px;white-space:nowrap"><span style="color:var(--text-secondary)">✍️</span><input type="number" id="socialPetitionCount" style="width:70px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px" data-en="Signed" data-zh="已签" value="0"><span id="socialSignedLabel" style="color:var(--text-secondary);font-size:11px" data-en="signed" data-zh="已签">signed</span></span>
+          <input type="text" id="socialCampaignUrl" style="flex:2;min-width:120px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px" data-en="Campaign URL" data-zh="活动链接">
+        </div>
       </div>
-      <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()" id="socialBackBtn">← Back</button><button class="btn btn-teal" onclick="alert('Campaign launched!')" id="socialDoneBtn">Done ✓</button></div>
+
+      <!-- Template Angle Picker -->
+      <div class="card" id="socialAnglesCard">
+        <div class="card-title" id="scAngleTitle" data-en="Template Angle" data-zh="文案角度">Template Angle</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:8px">
+          <label style="display:flex;align-items:flex-start;gap:6px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;background:var(--surface)"><input type="checkbox" checked value="A" class="angle-cb" style="margin-top:2px"><div><div class="angle-name" data-angle="A" data-en="Problem-Solution" data-zh="问题-解决方案" style="font-weight:600;font-size:13px">Problem-Solution</div><div class="angle-desc" data-angle="A" data-en="Hook: struggling with topic" data-zh="钩子：为话题困扰" style="color:var(--text-secondary);font-size:11px">Hook: struggling with topic</div></div></label>
+          <label style="display:flex;align-items:flex-start;gap:6px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;background:var(--surface)"><input type="checkbox" value="B" class="angle-cb" style="margin-top:2px"><div><div class="angle-name" data-angle="B" data-en="Hot Topic" data-zh="热点话题" style="font-weight:600;font-size:13px">Hot Topic</div><div class="angle-desc" data-angle="B" data-en="Myth-busting take" data-zh="破除误区" style="color:var(--text-secondary);font-size:11px">Myth-busting take</div></div></label>
+          <label style="display:flex;align-items:flex-start;gap:6px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;background:var(--surface)"><input type="checkbox" value="C" class="angle-cb" style="margin-top:2px"><div><div class="angle-name" data-angle="C" data-en="Journey" data-zh="故事分享" style="font-weight:600;font-size:13px">Journey</div><div class="angle-desc" data-angle="C" data-en="Behind-the-scenes" data-zh="幕后故事" style="color:var(--text-secondary);font-size:11px">Behind-the-scenes</div></div></label>
+          <label style="display:flex;align-items:flex-start;gap:6px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;background:var(--surface)"><input type="checkbox" value="D" class="angle-cb" style="margin-top:2px"><div><div class="angle-name" data-angle="D" data-en="Community" data-zh="社区互动" style="font-weight:600;font-size:13px">Community</div><div class="angle-desc" data-angle="D" data-en="Engagement-driven" data-zh="互动驱动" style="color:var(--text-secondary);font-size:11px">Engagement-driven</div></div></label>
+          <label style="display:flex;align-items:flex-start;gap:6px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;background:var(--surface)"><input type="checkbox" value="E" class="angle-cb" style="margin-top:2px"><div><div class="angle-name" data-angle="E" data-en="Goal Progress" data-zh="进展更新" style="font-weight:600;font-size:13px">Goal Progress</div><div class="angle-desc" data-angle="E" data-en="Milestone celebration" data-zh="里程碑庆祝" style="color:var(--text-secondary);font-size:11px">Milestone celebration</div></div></label>
+          <label style="display:flex;align-items:flex-start;gap:6px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;background:var(--surface)"><input type="checkbox" value="F" class="angle-cb" style="margin-top:2px"><div><div class="angle-name" data-angle="F" data-en="Urgency" data-zh="紧急呼吁" style="font-weight:600;font-size:13px">Urgency</div><div class="angle-desc" data-angle="F" data-en="Deadline-driven" data-zh="截止日期驱动" style="color:var(--text-secondary);font-size:11px">Deadline-driven</div></div></label>
+        </div>
+      </div>
+
+      <!-- Platform Selector -->
+      <div class="card">
+        <div class="card-title" id="scPlatformTitle" data-en="Platforms" data-zh="平台">Platforms</div>
+        <div id="socialPlatforms" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div>
+      </div>
+
+      <!-- Loading -->
+      <div id="socialLoading" style="display:none;text-align:center;padding:20px;font-size:14px;color:var(--text-secondary)" data-en="⏳ Generating posts..." data-zh="⏳ 生成帖子中...">⏳ Generating posts...</div>
+
+      <!-- Results -->
+      <div id="socialResults" style="display:none">
+        <div class="card">
+          <div class="card-title" id="scResultTitle" data-en="Generated Posts" data-zh="生成的帖子">Generated Posts</div>
+          <div id="socialPlatformTabs" style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap"></div>
+          <div id="socialPostContent" style="border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;line-height:1.7;white-space:pre-wrap;min-height:80px;background:var(--surface)"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" id="scPublishTitle" data-en="Publish" data-zh="发布">Publish</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="publishSocial()" data-en="📅 Schedule &amp; Publish" data-zh="📅 安排发布">📅 Schedule &amp; Publish</button>
+            <button class="btn btn-secondary" onclick="copySocialPosts()" data-en="📋 Copy All" data-zh="📋 复制全部">📋 Copy All</button>
+            <button class="btn btn-secondary" onclick="downloadSocialPosts()" data-en="⬇ Download" data-zh="⬇ 下载">⬇ Download</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row"><button class="btn btn-secondary" onclick="prevStep()" id="socialBackBtn">← Back</button><button class="btn btn-teal" onclick="alert(STATE.lang==='zh-Hans'?'活动已发起！✓':'Campaign launched!')" id="socialDoneBtn">Done ✓</button></div>
     </div>
 
     <div class="agent-panel" id="panel-blackbox">
       <h1 id="bbTitle">AI Black Box</h1>
-      <p class="desc" id="bbDesc">Raw reasoning trace.</p>
-      <div class="card"><div class="card-title">Reasoning Trace</div><div id="bbPlaceholder" style="border:1px dashed var(--border);border-radius:8px;padding:20px;min-height:150px;font-size:12px;font-family:monospace;color:var(--text-secondary);display:flex;align-items:center;justify-content:center">📦 Output here</div></div>
+      <p class="desc" id="bbDesc">Autonomous AI legislation generator — constantly drafting AI bills.</p>
+
+      <!-- Status info only — no controls, no human intervention -->
+      <div style="display:flex;gap:16px;font-size:12px;color:var(--text-secondary);margin-bottom:10px;padding:4px 4px 8px;border-bottom:1px solid var(--border)">
+        <span>📊 <span id="bbCount">0</span> <span data-en="bills" data-zh="个法案">bills</span></span>
+        <span>⏱️ <span id="bbElapsed">-</span></span>
+        <span>🏛️ <span id="bbJurDist">-</span></span>
+        <span id="bbStatus" style="margin-left:auto;font-weight:600;color:var(--teal)" data-en="⚡ Generating..." data-zh="⚡ 生成中...">⚡ Generating...</span>
+      </div>
+
+      <!-- Live Feed — infinite auto-generation -->
+      <div id="bbFeed" style="padding-top:2px"></div>
     </div>
 
   </div>
@@ -232,6 +301,7 @@ async function init(){
     const ps=document.getElementById('presetSelect');if(ps){ps.innerHTML='';
     for(const[k,p]of Object.entries(d.presets)){const o=document.createElement('option');o.value=k;o.text=p.label_en;if(k===d.active)o.selected=true;ps.appendChild(o)}}
     renderDashGrid();
+    switchLang('en');
     console.log('Init complete');
   }catch(e){console.warn('Init error:',e);try{renderDashGrid()}catch(e2){console.warn('Fallback failed:',e2)}}
 }
@@ -262,6 +332,18 @@ function switchAgent(id){
   if(id==='analysis' && STATE.lastGenTopic){
     document.getElementById('analysisTopicInput').value=STATE.lastGenTopic;
   }
+  // Init social platforms
+  if(id==='social'){
+    const si=document.getElementById('socialTopicInput');
+    if(si&&STATE.lastGenTopic)si.value=STATE.lastGenTopic;
+    renderSocialPlatforms();
+  }
+  // Auto-start black box on enter, stop on leave
+  if(id==='blackbox'){
+    bbStart();
+  } else if(_bbRunning) {
+    bbStop();
+  }
 }
 
 document.querySelectorAll('.sidebar-item').forEach(el=>{el.addEventListener('click',()=>{switchAgent(el.dataset.agent);toggleSidebar()})});
@@ -282,8 +364,9 @@ function switchLang(code){
   AGENTS.forEach(a=>{const el=document.querySelector('.sidebar-item[data-agent="'+a.id+'"] .label');if(el)el.textContent=zh?a.labelZh:a.label});
   const cur=AGENTS.find(x=>x.id===STATE.currentAgent);
   if(cur){document.getElementById('agentTitle').textContent=zh?cur.labelZh:cur.label;document.getElementById('agentModel').textContent=cur.model?(zh?'模型：'+cur.model:'Model: '+cur.model):''}
-  document.querySelector('.brand-text').textContent=zh?'小律提案':'Bill Machine';
-  document.getElementById('dashTitle').textContent=zh?'小律提案 · 法案机器':'小律提案 · Bill Machine';
+  document.querySelector('.brand-text').textContent=zh?'小律提案':'Leges';
+  document.getElementById('dashTitle').textContent=zh?'小律提案：AI为AI立法':'Leges · Bill Machine';
+  document.title=zh?'小律提案：AI为AI立法':'Leges · Bill Machine';
   document.getElementById('dashDesc').textContent=zh?'选择一个 Agent 开始。':'Select an agent to get started.';
   const dashSi=document.getElementById('dashSearchInput');if(dashSi)dashSi.placeholder=zh?'搜索...':'Search...';
   const si=document.getElementById('agentSearchInput');if(si)si.placeholder=zh?'例如：山火':'e.g. wildfire';
@@ -299,16 +382,25 @@ function switchLang(code){
     'aStepTitle':['Step 3 of 4 — Analysis','第 3 步 / 共 4 步 — 分析'],
     'scTitle':['Spread the word','社媒推广'],'scDesc':['Draft and publish social campaigns.','起草并发布社媒活动。'],
     'scStepTitle':['Step 4 of 4 — Social Campaign','第 4 步 / 共 4 步 — 社媒活动'],
-    'bbTitle':['AI Black Box','AI 黑箱'],'bbDesc':['Raw reasoning trace.','推理追踪。']};
+    'bbTitle':['AI Black Box','AI 黑箱'],'bbDesc':['Autonomous AI legislation generator — constantly drafting AI bills.','AI 自主立法机 —— 不间断生成 AI 法案。']};
   for(const[id,v]of Object.entries(T)){const el=document.getElementById(id);if(el)el.textContent=zh?v[1]:v[0]}
   // More i18n
-  const moreIDs=['aPartyBtnText','aOverallBtnText','aGraphBtnText','genFindLegislatorText','genPetitionText','genBackBtn','genNextBtn','genLoadingText','analysisSelectedLabel','analysisBackBtn','analysisNextBtn','socialDraftText','socialScheduleText','socialBackBtn','socialDoneBtn'];
-  const moreEN=['Analyze party pass rates','Overall pass rate','Generate graph','Find legislator to back it','Collect petition signatures','← Back','Next: Analysis →','Generating...','Analyzing','← Back','Next: Social Campaign →','Draft social posts','Schedule & publish','← Back','Done ✓'];
-  const moreZH=['分析政党投票率','整体通过率','生成图表','寻找支持议员','收集请愿签名','← 返回','下一步：分析 →','生成中...','分析中','← 返回','下一步：社媒活动 →','起草社媒帖子','安排与发布','← 返回','完成 ✓'];
+  const moreIDs=['aPartyBtnText','aOverallBtnText','aGraphBtnText','genFindLegislatorText','genPetitionText','genBackBtn','genNextBtn','genLoadingText','analysisSelectedLabel','analysisBackBtn','analysisNextBtn','socialBackBtn','socialDoneBtn'];
+  const moreEN=['Analyze party pass rates','Overall pass rate','Generate graph','Find legislator to back it','Collect petition signatures','← Back','Next: Analysis →','Generating...','Analyzing','← Back','Next: Social Campaign →','← Back','Done ✓'];
+  const moreZH=['分析政党投票率','整体通过率','生成图表','寻找支持议员','收集请愿签名','← 返回','下一步：分析 →','生成中...','分析中','← 返回','下一步：社媒活动 →','← 返回','完成 ✓'];
   moreIDs.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=zh?moreZH[i]:moreEN[i]});
   // Style select
   const ss=document.getElementById('genStyleSelect');
   if(ss)for(const o of ss.options){const k=zh?'data-zh':'data-en';const t=o.getAttribute(k);if(t)o.textContent=t}
+  // Generic data-en/data-zh i18n for textContent + placeholder
+  document.querySelectorAll('[data-en][data-zh]').forEach(el=>{
+    const k=zh?'data-zh':'data-en';
+    const t=el.getAttribute(k);
+    if(t){
+      if(el.tagName==='INPUT'||el.tagName==='TEXTAREA'){el.placeholder=t;}
+      else if(el.tagName==='BUTTON'||el.tagName==='SPAN'||el.tagName==='DIV'||el.tagName==='LABEL'){el.textContent=t;}
+    }
+  });
   // Chart/BB placeholder
   document.getElementById('chartPlaceholder').textContent=zh?'📊 图表区域':'📊 Chart area';
   document.getElementById('bbPlaceholder').textContent=zh?'📦 输出区域':'📦 Output here';
@@ -478,7 +570,7 @@ async function generateGraph(){
   const ph=document.getElementById('chartPlaceholder');
   const zh=STATE.lang==='zh-Hans';ph.innerHTML='⏳ '+(zh?'AI 生成图表...':'Generating chart...');
   const p=STATE.preset;jurList=(p==='california')?['CA']:(p==='hackathon'||p==='china')?['HK','MO']:['CA','HK','MO'];
-  const jcolors={'CA':'#2563eb','HK':'#14b8a6','MO':'#d97706'};
+  const jcolors={'CA':'#DDA77B','HK':'#71677C','MO':'#945D5E'};
   try{
     const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,title:topic,style:'standard',lang:zh?'zh':'en',analysis:true})});
     const d=await r.json();const aiText=d.generated||'';
@@ -507,7 +599,214 @@ async function loadOverallPassRate(){
     ph.innerHTML='📈 <b>'+esc(topic)+'</b><br><br>'+t.replace(/\n/g,'<br>');
   }catch(e){ph.innerHTML='⚠️ Error: '+e.message;}
 }
+// ── Social Campaign ──
+let _socialPostsData = {};
+function renderSocialPlatforms(){
+  const zh=STATE.lang==='zh-Hans';const p=STATE.preset;
+  let platforms=[];
+  if(p==='california'){
+    platforms=[{id:'instagram',label:'Instagram',icon:'📸'},{id:'linkedin',label:'LinkedIn',icon:'💼'},{id:'twitter',label:'X/Twitter',icon:'🐦'},{id:'facebook',label:'Facebook',icon:'👍'}];
+  } else {
+    platforms=[{id:'instagram',label:'Instagram',icon:'📸'},{id:'xiaohongshu',label:zh?'小红书':'Xiaohongshu',icon:'📕'}];
+  }
+  const c=document.getElementById('socialPlatforms');
+  if(!c)return;
+  c.innerHTML=platforms.map(p=>'<label style="display:flex;align-items:center;gap:4px;padding:5px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;background:var(--surface)"><input type="checkbox" checked value="'+p.id+'" class="social-cb"> '+p.icon+' '+p.label+'</label>').join('');
+}
+async function genSocialPosts(){
+  const topic=document.getElementById('socialTopicInput').value.trim()||STATE.lastGenTopic;
+  if(!topic){alert(STATE.lang==='zh-Hans'?'请输入法案主题':'Enter a bill topic');return}
+  const zh=STATE.lang==='zh-Hans';
+  const checked=Array.from(document.querySelectorAll('.social-cb:checked')).map(cb=>cb.value);
+  if(!checked.length){alert(zh?'请选择平台':'Select at least one platform');return}
+  const angles=Array.from(document.querySelectorAll('.angle-cb:checked')).map(cb=>cb.value);
+  if(!angles.length){alert(zh?'请选择至少一个文案角度':'Select at least one angle');return}
+  // Read petition context
+  const billTitle=document.getElementById('socialBillTitle').value.trim()||topic;
+  const petitionGoal=parseInt(document.getElementById('socialPetitionGoal').value)||2000;
+  const petitionCount=parseInt(document.getElementById('socialPetitionCount').value)||0;
+  const campaignUrl=document.getElementById('socialCampaignUrl').value.trim()||'';
+  const loading=document.getElementById('socialLoading');const results=document.getElementById('socialResults');
+  loading.style.display='block';results.style.display='none';
+  try{
+    const r=await fetch('/api/social/generate',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({topic,platforms:checked,angles,lang:zh?'zh':'en',
+        bill_title:billTitle,petition_goal:petitionGoal,petition_signatures:petitionCount,
+        campaign_url:campaignUrl})});
+    const d=await r.json();if(d.error)throw new Error(d.error);
+    _socialPostsData=d.posts||{};
+    renderSocialResults(topic,_socialPostsData);
+    results.style.display='block';
+  }catch(e){
+    const pc=document.getElementById('socialPostContent');
+    if(pc)pc.textContent='⚠ '+e.message;
+    results.style.display='block';
+  }
+  loading.style.display='none';
+}
+function renderSocialResults(topic,posts){
+  const zh=STATE.lang==='zh-Hans';
+  const platforms=Object.keys(posts);
+  if(!platforms.length){
+    document.getElementById('socialPostContent').textContent=zh?'生成失败，请重试':'Generation failed, try again';
+    return;
+  }
+  // Build tabs
+  const tabsContainer=document.getElementById('socialPlatformTabs');
+  tabsContainer.innerHTML=platforms.map((p,i)=>{
+    const icon={'instagram':'📸','linkedin':'💼','twitter':'🐦','facebook':'👍','xiaohongshu':'📕'}[p.toLowerCase().replace(/[^a-z]/g,'')]||'📝';
+    return '<button class="btn '+(i===0?'btn-primary':'btn-secondary')+'" data-sp="'+esc(p)+'" onclick="switchSocialTab(\''+esc(p)+'\')" style="font-size:12px;padding:6px 12px">'+icon+' '+esc(p)+'</button>';
+  }).join('');
+  switchSocialTab(platforms[0]);
+}
+function switchSocialTab(platform){
+  document.querySelectorAll('#socialPlatformTabs button').forEach(b=>{
+    b.classList.toggle('btn-primary',b.dataset.sp===platform);
+    b.classList.toggle('btn-secondary',b.dataset.sp!==platform);
+  });
+  const content=document.getElementById('socialPostContent');
+  const post=_socialPostsData[platform];
+  if(post){
+    var html = post.replace(/\n/g,'<br>');
+    html = html.replace(/(tags?:|hashtags?:|cta:|label:|CTA:)/gi,'<br><b>$1</b>');
+    content.innerHTML = html;
+  } else {
+    content.textContent=(STATE.lang==='zh-Hans'?'无内容：':'No content for ')+platform;
+  }
+}
+function publishSocial(){
+  const zh=STATE.lang==='zh-Hans';
+  const posts=Object.entries(_socialPostsData);
+  if(!posts.length){alert(zh?'请先生成帖子':'Please generate posts first');return}
+  let msg=zh?'社媒活动已安排！\n\n':'Social campaign scheduled!\n\n';
+  posts.forEach(([p,c])=>{
+    var firstLine = c.split('\n')[0];
+    msg+=p+': '+firstLine.substring(0,60)+'...\n\n';
+  });
+  msg+=zh?'（演示版 — 不实际发布到社交平台）':'(Demo - not actually posted)';
+  alert(msg);
+}
+function copySocialPosts(){
+  const zh=STATE.lang==='zh-Hans';
+  const posts=Object.entries(_socialPostsData);
+  if(!posts.length){alert(zh?'请先生成帖子':'Please generate posts first');return}
+  var topic = document.getElementById('socialTopicInput').value.trim()||'Campaign';
+  let text='SOCIAL CAMPAIGN: '+topic+'\n'+'='.repeat(50)+'\n\n';
+  posts.forEach(([p,c])=>{text+='=== '+p+' ===\n'+c+'\n\n---\n\n'});
+  navigator.clipboard.writeText(text).then(function(){
+    alert(zh?'已复制到剪贴板':'Copied to clipboard');
+  }).catch(function(){
+    var ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+    alert(zh?'已复制到剪贴板':'Copied to clipboard');
+  });
+}
+function downloadSocialPosts(){
+  const zh=STATE.lang==='zh-Hans';
+  const posts=Object.entries(_socialPostsData);
+  if(!posts.length){alert(zh?'请先生成帖子':'Please generate posts first');return}
+  var topic = document.getElementById('socialTopicInput').value.trim()||'Campaign';
+  let text='# Social Campaign: '+topic+'\n\n';
+  posts.forEach(([p,c])=>{text+='## '+p+'\n\n'+c+'\n\n---\n\n'});
+  var blob=new Blob([text],{type:'text/markdown'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='social-campaign-'+Date.now()+'.md';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
 // ── Petition ──
+
+// ── AI Black Box — Purely Autonomous Legislation Generator ──
+const _bbSeedBills = [
+  {id:'AI-CA-1084',jurisdiction:'CA',topic:'AI Systems Audit and Accountability Requirements',title:'AI Transparency and Accountability Act of 2026',content:'SECTION 1. SHORT TITLE\nThis Act may be cited as the "AI Transparency and Accountability Act of 2026".\n\nSECTION 2. AI SYSTEM REGISTRY\nThe California Department of Technology shall establish and maintain a public registry of all AI systems deployed by state agencies, including their purpose, training data sources, and performance metrics.\n\nSECTION 3. ANNUAL AUDIT REQUIREMENTS\nEach state agency utilizing an AI system shall conduct an annual algorithmic audit to assess bias, accuracy, and fairness. Audit results shall be submitted to the Legislature and published online.\n\nSECTION 4. PENALTIES\nAgency heads failing to comply shall be subject to a fine of up to $50,000 per violation.'},
+  {id:'AI-HK-2351',jurisdiction:'HK',topic:'Synthetic Media and Deepfake Labeling Requirements',title:'Deepfake Content Labeling and Consumer Protection Ordinance',content:'PREAMBLE\nWHEREAS the proliferation of synthetic media poses risks to public discourse and consumer trust;\n\nPART I — LABELING REQUIREMENTS\n1. Any person who publishes synthetic media for commercial or political purposes must affix a clear, conspicuous label identifying the content as AI-generated.\n2. The label must remain visible for the duration of the content\'s distribution.\n\nPART II — OFFENCES AND PENALTIES\n3. A person who fails to label synthetic media commits an offence and is liable on conviction to a fine of HK$500,000 and imprisonment for 2 years.'},
+  {id:'AI-MO-3702',jurisdiction:'MO',topic:'AI in Healthcare Diagnostics Regulation',title:'Intelligent Medical Device Certification Amendment Act',content:'Artigo 1.º — Objecto\nA presente lei estabelece os requisitos de certificação para dispositivos médicos que utilizem inteligência artificial no diagnóstico clínico.\n\nArtigo 2.º — Requisitos de Certificação\nOs dispositivos médicos inteligentes devem obter certificação junto da Direcção dos Serviços de Saúde antes da comercialização. A certificação exige:\na) Validação clínica com sensibilidade mínima de 95%;\nb) Transparência algorítmica documentada;\nc) Mecanismo de supervisão humana.\n\nArtigo 3.º — Sanções\nO incumprimento sujeita os infractores a multas entre MOP 200,000 e MOP 1,000,000.'},
+  {id:'AI-CA-5192',jurisdiction:'CA',topic:'Autonomous Vehicle Liability and Insurance Framework',title:'Autonomous Vehicle Liability and Insurance Standards Act',content:'SECTION 1. SHORT TITLE\nThis Act shall be known as the "Autonomous Vehicle Liability and Insurance Standards Act of 2026".\n\nSECTION 2. LIABILITY FRAMEWORK\n(a) The manufacturer of an autonomous vehicle shall bear primary liability for collisions occurring while the vehicle is operating in autonomous mode.\n(b) The owner shall bear liability when operating the vehicle manually.\n\nSECTION 3. INSURANCE REQUIREMENTS\nAll autonomous vehicles in California shall carry minimum insurance coverage of $5,000,000 for incidents occurring in autonomous mode.'},
+  {id:'AI-HK-6483',jurisdiction:'HK',topic:'Algorithmic Bias Prevention and Fairness Standards',title:'Algorithmic Employment Fairness and Non-Discrimination Bill',content:'PREAMBLE\nWHEREAS artificial intelligence systems used in employment decisions may perpetuate discrimination;\n\nCLAUSE 1 — SCOPE\nThis Bill applies to any employer using AI systems for recruitment, screening, promotion, or performance evaluation.\n\nCLAUSE 2 — BIAS AUDIT REQUIREMENTS\nEmployers shall conduct annual bias audits of any AI system used in employment decisions. Audits must be conducted by an independent third party accredited by the Equal Opportunities Commission.\n\nCLAUSE 3 — CIVIL PENALTIES\nAn employer who violates this Bill shall be liable to a civil penalty not exceeding HK$800,000.'},
+  {id:'AI-MO-8219',jurisdiction:'MO',topic:'AI Data Privacy and Consent Management',title:'Cross-Border AI Data Transfer and Privacy Protection Ordinance',content:'Artigo 1.º — Âmbito\nO presente ordenamento regula a transferência transfronteiriça de dados pessoais utilizados por sistemas de inteligência artificial.\n\nArtigo 2.º — Consentimento\nO tratamento de dados pessoais por sistemas de IA requer consentimento explícito e informado do titular.\n\nArtigo 3.º — Transferências Internacionais\nAs transferências de dados para fora de Macau só são permitidas quando o destino assegurar um nível de proteção equivalente.\n\nArtigo 4.º — Penalidades\nA violação sujeita os infratores a multas de MOP 500,000 a MOP 2,000,000.'},
+  {id:'AI-CA-7731',jurisdiction:'CA',topic:'AI Energy Consumption and Environmental Impact Disclosure',title:'AI Energy Consumption Disclosure and Efficiency Standards Act',content:'SECTION 1. SHORT TITLE\nThis Act may be cited as the "AI Energy Consumption Disclosure and Efficiency Standards Act of 2026".\n\nSECTION 2. DISCLOSURE REQUIREMENTS\nAny company operating AI training workloads in California shall publicly disclose:\n(a) Total energy consumption attributable to AI model training and inference;\n(b) Carbon emissions associated with such energy use;\n\nSECTION 3. EFFICIENCY STANDARDS\nThe California Energy Commission shall establish minimum efficiency standards for AI data centers by January 1, 2028.\n\nSECTION 4. COMPLIANCE\nNon-compliance shall result in fines of up to $100,000 per quarter.'},
+  {id:'AI-HK-4528',jurisdiction:'HK',topic:'Government Use of Facial Recognition Technology Moratorium',title:'Facial Recognition Technology Moratorium and Public Safety Act',content:'PREAMBLE\nWHEREAS the use of facial recognition technology by government authorities raises significant privacy and civil liberties concerns;\n\nPART I — MORATORIUM\n1. There shall be a moratorium on the government\'s deployment of facial recognition technology in public places for a period of three years.\n2. The moratorium shall not apply to law enforcement investigations involving imminent threat of serious bodily harm.\n\nPART II — REVIEW COMMISSION\n3. A Facial Recognition Technology Review Commission is established to study the technology\'s impact on privacy, accuracy across demographic groups, and potential regulatory frameworks.'},
+  {id:'AI-CA-3106',jurisdiction:'CA',topic:'Social Media Content Moderation Transparency Act',title:'AI-Generated Content Platform Liability and Transparency Act',content:'SECTION 1. SHORT TITLE\nThis Act shall be known as the "AI-Generated Content Platform Liability and Transparency Act of 2026".\n\nSECTION 2. LABELING REQUIREMENTS\nPlatforms with over 10,000,000 monthly active users in California shall label all AI-generated content posted on their platforms with a clear, machine-readable marker.\n\nSECTION 3. API ACCESS FOR RESEARCHERS\nPlatforms shall provide bona fide researchers with API access to study the impact of AI-generated content on public discourse.\n\nSECTION 4. CIVIL LIABILITY\nPlatforms that knowingly fail to label AI-generated political advertising shall be liable for damages.'},
+  {id:'AI-MO-1947',jurisdiction:'MO',topic:'AI in Education Personalized Learning Standards',title:'Student Data Privacy and AI in Education Regulation Bill',content:'Artigo 1.º — Objecto e Âmbito\nO presente regulamento estabelece as normas para a utilização de inteligência artificial no ensino primário e secundário de Macau.\n\nArtigo 2.º — Protecção de Dados\nOs dados dos alunos recolhidos por sistemas de IA educacionais:\na) Não podem ser vendidos ou partilhados com terceiros;\nb) Devem ser anonimizados após 12 meses;\nc) Só podem ser utilizados para fins educacionais.\n\nArtigo 3.º — Transparência\nOs pais têm direito a ser informados sobre que sistemas de IA são utilizados e que dados dos seus educandos são processados.'},
+  {id:'AI-CA-9254',jurisdiction:'CA',topic:'AI Research Funding and Ethics Oversight',title:'California AI Research Funding and Ethics Oversight Act',content:'SECTION 1. SHORT TITLE\nThis Act may be cited as the "California AI Research Funding and Ethics Oversight Act of 2026".\n\nSECTION 2. AI RESEARCH GRANT PROGRAM\nThere is hereby established the California AI Research Grant Program, administered by the California Department of Science and Innovation, to award grants for AI safety and ethics research.\n\nSECTION 3. FUNDING\n$50,000,000 is appropriated annually for five years to support research in AI alignment, privacy-preserving ML, fairness and bias mitigation, and AI interpretability.\n\nSECTION 4. ETHICS OVERSIGHT BOARD\nAn AI Ethics Oversight Board is created to review all state-funded AI research proposals for ethical implications.'},
+  {id:'AI-HK-5862',jurisdiction:'HK',topic:'AI in Criminal Justice Risk Assessment Reform',title:'AI in Criminal Justice Risk Assessment Reform Bill',content:'PREAMBLE\nWHEREAS the use of artificial intelligence in criminal justice risk assessments may introduce bias and affect defendants\' rights;\n\nCLAUSE 1 — PROHIBITIONS\nNo court shall use an AI system as the sole basis for:\na) Determining bail or pretrial detention;\nb) Sentencing decisions;\nc) Parole or probation determinations.\n\nCLAUSE 2 — RIGHT TO EXPLANATION\nAny defendant subject to an AI-based risk assessment has the right to a human-readable explanation of the assessment and to challenge the result.'},
+];
+
+let _bbRunning = false;
+let _bbTimer = null;
+let _bbCount = 0;
+let _bbStartTime = null;
+let _bbJurCounts = {CA:0, HK:0, MO:0};
+let _bbSeeded = false;
+
+function bbStart(){
+  if(_bbRunning)return;
+  _bbRunning=true;
+  _bbStartTime=_bbStartTime||Date.now();
+
+  // Inject 1-5 random seed bills for instant feed illusion
+  if(!_bbSeeded){
+    _bbSeeded=true;
+    const seedCount=1+Math.floor(Math.random()*5);
+    const pool=[..._bbSeedBills].sort(()=>Math.random()-0.5);
+    for(let i=0;i<seedCount&&i<pool.length;i++) bbInjectCard(pool[i]);
+    _bbStartTime=Date.now(); // timer starts now, ignoring seeds
+  }
+
+  bbAutoGenerate();
+}
+
+function bbStop(){
+  _bbRunning=false;
+  if(_bbTimer){clearTimeout(_bbTimer);_bbTimer=null}
+}
+
+function bbAutoGenerate(){
+  if(!_bbRunning)return;
+  bbGenerateOne().then(()=>{
+    if(_bbRunning){
+      _bbTimer=setTimeout(bbAutoGenerate, 3000+Math.random()*3000);
+    }
+  });
+}
+
+function bbUpdateStats(){
+  document.getElementById('bbCount').textContent=_bbCount;
+  if(_bbStartTime){
+    const e=Math.floor((Date.now()-_bbStartTime)/1000);
+    document.getElementById('bbElapsed').textContent=Math.floor(e/60)+'m '+e%60+'s';
+  }
+  const dist=Object.entries(_bbJurCounts).filter(([_,c])=>c>0).map(([j,c])=>j+':'+c).join(' ');
+  document.getElementById('bbJurDist').textContent=dist||'-';
+}
+
+const _bbJurFlags={CA:'🇺🇸',HK:'🇭🇰',MO:'🇲🇴'};
+
+function bbInjectCard(bill){
+  const feed=document.getElementById('bbFeed');if(!feed)return;
+  _bbCount++;_bbJurCounts[bill.jurisdiction]=(_bbJurCounts[bill.jurisdiction]||0)+1;
+  bbUpdateStats();
+  const card=document.createElement('div');
+  card.className='card bb-card';
+  card.style.marginBottom='10px';
+  card.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">'+
+    '<div style="flex:1;min-width:0">'+
+      '<span style="font-weight:700;font-size:15px">'+esc(bill.title)+'</span>'+
+      '<span style="font-size:11px;color:var(--text-secondary);margin-left:6px">'+(_bbJurFlags[bill.jurisdiction]||'')+' '+bill.jurisdiction+'</span>'+
+    '</div>'+
+    '<span style="font-size:10px;color:var(--text-secondary);background:var(--bg);padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0">#'+_bbCount+'</span>'+
+  '</div>'+
+  '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">📌 '+esc(bill.topic)+' · '+bill.id+'</div>'+
+  '<div style="font-size:13px;line-height:1.7;white-space:pre-wrap;background:var(--bg);padding:14px;border-radius:8px;max-height:320px;overflow-y:auto;border:1px solid var(--border)">'+esc(bill.content)+'</div>';
+  feed.insertBefore(card,feed.firstChild);
+  while(feed.children.length>50)feed.removeChild(feed.lastChild);
+}
+
+async function bbGenerateOne(){
+  try{
+    const r=await fetch('/api/blackbox/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic:'',lang:STATE.lang==='zh-Hans'?'zh':'en'})});
+    const d=await r.json();if(d.success&&d.bill)bbInjectCard(d.bill);
+  }catch(e){console.error('BB error:',e)}
+}
 
 document.addEventListener('DOMContentLoaded',init);
 </script>
