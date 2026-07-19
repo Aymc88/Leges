@@ -303,11 +303,6 @@ async function init(){
     for(const[k,p]of Object.entries(d.presets)){const o=document.createElement('option');o.value=k;o.text=p.label_en;if(k===d.active)o.selected=true;ps.appendChild(o)}}
     renderDashGrid();
     switchLang('en');
-    // Set initial sidebar icon based on preset
-    const pkey=document.getElementById('presetSelect').value;
-    if(pkey==='california'){
-      document.getElementById('sidebarIcon').innerHTML='<img src="/static/logo-en.png" style="width:30px;height:30px;border-radius:8px" alt="L">';
-    }
     console.log('Init complete');
   }catch(e){console.warn('Init error:',e);try{renderDashGrid()}catch(e2){console.warn('Fallback failed:',e2)}}
 }
@@ -410,6 +405,9 @@ function switchLang(code){
   // Chart/BB placeholder
   document.getElementById('chartPlaceholder').textContent=zh?'📊 图表区域':'📊 Chart area';
   document.getElementById('bbPlaceholder').textContent=zh?'📦 输出区域':'📦 Output here';
+  // Logo 按语言切换
+  const icon=document.getElementById('sidebarIcon');
+  if(icon)icon.innerHTML=zh?'<img src="/static/logo.png" style="width:30px;height:30px;border-radius:8px" alt="律">':'<img src="/static/logo-en.png" style="width:30px;height:30px;border-radius:8px" alt="L">';
 }
 
 async function switchPreset(key){
@@ -422,11 +420,7 @@ async function switchPreset(key){
     else if(key==='hackathon'||key==='china')jurSel.value='';
     else jurSel.value='';
   }
-  // 切换 Logo — Hackathon/China 显示中文 Logo，加州显示文字
-  const icon=document.getElementById('sidebarIcon');
-  if(icon){
-    if(key==='california'){
-      icon.innerHTML='<img src="/static/logo-en.png" style="width:30px;height:30px;border-radius:8px" alt="L">';
+}
     } else {
       icon.innerHTML='<img src="/static/logo.png" style="width:30px;height:30px;border-radius:8px" alt="L">';
       icon.style.background='';
