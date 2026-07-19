@@ -404,7 +404,7 @@ function switchLang(code){
   });
   // Chart/BB placeholder
   document.getElementById('chartPlaceholder').textContent=zh?'📊 图表区域':'📊 Chart area';
-  document.getElementById('bbPlaceholder').textContent=zh?'📦 输出区域':'📦 Output here';
+  const bbp=document.getElementById('bbPlaceholder');if(bbp)bbp.textContent=zh?'📦 输出区域':'📦 Output here';
   // Logo 按语言切换
   const icon=document.getElementById('sidebarIcon');
   if(icon)icon.innerHTML=zh?'<img src="/static/logo.png" style="width:30px;height:30px;border-radius:8px" alt="律">':'<img src="/static/logo-en.png" style="width:30px;height:30px;border-radius:8px" alt="L">';
