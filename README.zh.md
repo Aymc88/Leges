@@ -162,11 +162,9 @@
 ---
 ## ⚡ 部署
 
-本项目已在 **Vercel** 上线，可直接访问使用。
+本项目已在 **Vercel** 上线 → [leges-mcp.vercel.app](https://leges-mcp.vercel.app)
 
-```bash
-npm_config_cache=/tmp/npm-cache npx vercel --name leges-app --prod
-```
+早期开发阶段在 **DGX Spark** 本地部署运行，使用 `uvicorn web.routes:app --host 0.0.0.0 --port 8000` 本地调试。
 
 ---
 ## 📁 项目结构
