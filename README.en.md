@@ -30,7 +30,7 @@ To answer that, I built **Leges**.
 |---|---------|----------|
 | 1 | **Governments don't know where to start** — AI legislation is accelerating with no playbook | **Search Agent**: Cross-jurisdictional search across thousands of bills — legislators stand on giants' shoulders |
 | 2 | **Bill language is a barrier** — Ordinary people can't read or write legislation | **Generate Agent**: Input a topic, get a professional bill draft in 3 levels of detail |
-| 3 | **Cross-jurisdictional silos** — CA/HK/MO each figuring it out alone | **Tri-jurisdiction fusion**: Unified search across California, Hong Kong, and Macau data |
+| 3 | **Cross-jurisdictional silos** — Hong Kong, Macau, California each figuring it out alone | **Tri-jurisdiction fusion**: Unified search across Hong Kong, Macau, and California data |
 | 4 | **Reactive, not proactive** — Legislators only act after a crisis | **Black Box**: 24/7 autonomous AI bill generation — turning reactive into proactive |
 | 5 | **AI policy can't be insider-only** — The affected have no voice | **Full participation chain**: Search → Draft → Analyze → Petition → Social — for everyone |
 
@@ -48,7 +48,7 @@ The world's first 24/7 non-stop AI legislation engine. Zero human intervention, 
 
 ### 2. Cross-Jurisdictional Intelligence
 
-Simultaneously leverages three fundamentally different institutional environments — California (bipartisan competition), Hong Kong (executive-led), and Macau (prior written approval by the Chief Executive) — for retrieval and generation, forming a unique **institutional spectrum** research framework.
+Simultaneously leverages three fundamentally different institutional environments — Hong Kong (executive-led), Macau (prior written approval by the Chief Executive), and California (bipartisan competition) — for retrieval and generation, forming a unique **institutional spectrum** research framework.
 
 ### 3. Legislative Transparency
 
@@ -62,7 +62,7 @@ From a personal concern to a city-wide petition, Leges builds a complete legisla
 
 ### Step 1: Search — Cross-Jurisdictional Precedent Retrieval
 
-Enter a topic in the dashboard search to retrieve relevant past bills. Then use the **Search Agent** for deeper cross-jurisdictional search — focus on a specific region (CA/HK/MO) or search across all jurisdictions at once. The system returns precise bill counts and detailed lists.
+Enter a topic in the dashboard search to retrieve relevant past bills. Then use the **Search Agent** for deeper cross-jurisdictional search — focus on a specific region (Hong Kong/Macau/California) or search across all jurisdictions at once. The system returns precise bill counts and detailed lists.
 
 ### Step 2: Generate — AI Drafting + Legislator Matching + Petition
 
@@ -124,7 +124,7 @@ In the AI era, AI should legislate for AI. Let AI safeguard the future of legisl
 ├──────────┴──────────┴──────────┴──────────┴─────────────┤
 │              Deepseek API (Anthropic-compatible)         │
 ├─────────────────────────────────────────────────────────┤
-│          Legislative Corpora (CA / HK / MO)              │
+│    Legislative Corpora (Hong Kong / Macau / California)    │
 │    Vector Embedding Search (384-dim + cosine similarity) │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -169,7 +169,7 @@ Each Agent independently calls the Deepseek LLM via structured prompt engineerin
 | AI Inference | Deepseek (Anthropic-compatible API) + StepFun | Social Agent & Black Box use StepFun |
 | Vector Search | NumPy + cosine similarity | 384-dim semantic bill search |
 | Deployment | Vercel (`@vercel/python`) | Serverless rapid deployment |
-| Data | 3-jurisdiction legislative corpora | CA (leginfo) + HK (LegCo) + MO |
+| Data | 3-jurisdiction legislative corpora | Hong Kong (LegCo) + Macau + California (leginfo) |
 
 ### NVIDIA & Third-Party Tools
 
