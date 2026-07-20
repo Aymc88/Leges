@@ -122,13 +122,6 @@ Each Agent independently calls the Deepseek LLM via structured prompt engineerin
 
 ---
 
-## 🤖 Dual-Engine Architecture
-
-The public-facing **Social Agent** and the autonomous **AI Black Box** are powered by **StepFun 阶跃星辰** models. The legally rigorous **Search**, **Generate**, and **Analysis Agents** are fully integrated with **Deepseek** models. A dual-engine powerhouse, backed by the full-stack compute capability of **NVIDIA DGX Spark**, that makes Leges' full automation possible.
-
----
-
-
 ---
 
 ## 🏗️ Architecture
@@ -167,7 +160,7 @@ The public-facing **Social Agent** and the autonomous **AI Black Box** are power
 |-------|------|-------|
 | Backend | Python / FastAPI | Lightweight async web framework |
 | Frontend | Static HTML + Vanilla JS | Zero dependencies, direct rendering |
-| AI Inference | Deepseek (Anthropic-compatible API) + StepFun | Social Agent & Black Box use StepFun |
+| AI Inference | Deepseek (Anthropic-compatible API) + StepFun | Social Agent & Black Box powered by StepFun; Search, Generate & Analysis Agents use Deepseek. Dual engines + NVIDIA DGX Spark for full automation |
 | Vector Search | NumPy + cosine similarity | 384-dim semantic bill search |
 | Deployment | Vercel (`@vercel/python`) | Serverless rapid deployment |
 | Data | 3-jurisdiction legislative corpora | Hong Kong (LegCo) + Macau + California (leginfo) |

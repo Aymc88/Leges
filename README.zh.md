@@ -119,10 +119,6 @@
 
 ---
 
-## 🤖 双引擎驱动
-
-面向公众的 **社媒活动 Agent** 以及自主运作的 **AI黑盒**，由 **StepFun 阶跃星辰** 模型驱动；而涉及严谨法律条文的 **搜索**、**生成** 与 **分析 Agent**，则全面接入 **Deepseek** 模型。双引擎强强联手，再加上 **NVIDIA DGX Spark** 的全栈算力支持，才真正实现了小律提案的全面自动化。
-
 ---
 ---
 ## 🏗️ 架构设计
@@ -156,7 +152,7 @@
 |-------|------|------|
 | 后端框架 | Python / FastAPI | 轻量异步 Web 框架 |
 | 前端 | 静态 HTML + Vanilla JS | 零依赖，直出渲染 |
-| AI 推理 | Deepseek（Anthropic 兼容 API）+ StepFun | 社媒活动 Agent 和 AI黑盒 使用 StepFun |
+| AI 推理 | Deepseek（Anthropic 兼容 API）+ StepFun | 社媒活动 Agent 与 AI黑盒由 StepFun 驱动；搜索、生成与分析 Agent 接入 Deepseek。双引擎联手 NVIDIA DGX Spark，实现全面自动化 |
 | 向量检索 | NumPy + cosine similarity | 384 维嵌入语义搜索 |
 | 部署平台 | Vercel（`@vercel/python`） | 无服务器快速部署 |
 | 数据 | 三法域立法语料库 | 香港（LegCo）+ 澳门 + 美国加州（leginfo） |
