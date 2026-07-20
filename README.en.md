@@ -13,14 +13,12 @@
 AI technology is advancing at breakneck speed, and AI legislation is accelerating worldwide. During my internship with a California State Assemblymember, I discovered a gap in the legislative process:
 
 One — no roadmap: AI legislation races ahead with no playbook for lawmakers.
-Two — language barrier: ordinary people can't read, let alone write, a bill.
+Two — language wall: ordinary people can't read, let alone write, a bill.
 Three — cross-jurisdictional silos: no tools exist to compare laws across regions.
 Four — reactive, not proactive: governments only act after a crisis hits.
 Five — insider-only: the people most affected have no seat at the table.
 
-The language of bills is too complex, the barrier too high for ordinary people to participate.
-
-Can AI legislate for AI?
+If we fight fire with fire, can AI legislate for AI?
 
 To answer that, I built **Leges**.
 
