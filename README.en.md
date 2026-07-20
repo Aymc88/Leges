@@ -40,7 +40,7 @@ To answer that, I built **Leges**.
 
 ### 1. Dual-Mode Legislation — Human + Autonomous
 
-**Human-driven Agent pipeline:**
+**Human-guided chain:**
 Search existing bills → Generate draft → Analyze pass rates → Social campaign — a complete legislative advocacy loop. Each Agent works standalone or in sequence.
 
 **Autonomous Black Box:**
