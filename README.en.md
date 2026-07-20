@@ -127,6 +127,11 @@ The public-facing **Social Agent** and the autonomous **AI Black Box** are power
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
+<p align="center">
+  <img src="web/static/architecture-mindmap.png" width="700" alt="Architecture Mindmap">
+  <br><em>Leges Architecture Mindmap</em>
+</p>
+
 ### Multi-Agent Collaboration
 
 | Agent | Role | Input → Output |
