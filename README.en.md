@@ -95,7 +95,7 @@ The **Social Agent** automatically sets signature targets and comes with six cop
 
 At the heart of the platform: the **AI Black Box**. Here, an AI-driven autonomous legislation flow operates 24/7, tirelessly detecting emerging tech vulnerabilities and continuously generating new bill drafts — with zero human input required. The system autonomously evolves and generates complete bills, integrating them in real-time with fresh timestamps.
 
-In summary:
+**In summary:**
 
 | Agent | Role | Input → Output |
 |-------|------|---------------|
@@ -104,6 +104,27 @@ In summary:
 | 📊 Analysis | Pass rate prediction | Bill topic → Pass rate % + party breakdown + chart |
 | 📣 Social | Social campaign | Bill info → Platform-adapted posts with petition CTA |
 | 📦 AI Black Box | Autonomous legislation | No input → Continuous AI bill generation |
+
+---
+
+
+## 🤖 Agent Integration & Model Optimization
+
+### Multi-Agent Coordination
+
+Each Agent independently calls the Deepseek LLM via structured prompt engineering:
+
+- **Search Agent**: 384-dim vector embeddings for semantic retrieval; auto-translates Chinese queries to English
+- **Generate Agent**: Three-part prompts (role + task + format constraints) with Standard/Detailed/Simple output levels
+- **Analysis Agent**: Three-stage quantitative simulation (chart analysis + party analysis + overall pass rate), structured output for prediction charts and assessment reports
+- **Social Agent**: 6 template angles (problem-solution, hot topic, journey story, community, goal progress, urgency); platform tone guides injected as system prompts
+- **Black Box**: 25 AI policy topics in a rotating pool; 3-6 second intervals for unsupervised autonomous generation
+
+### Optimization
+
+- Precise prompt engineering (role setting, output format, language enforcement) reduces hallucinations
+- Language isolation: English/Chinese modes each have forced language directives to prevent code-switching
+- Vercel serverless deployment with optimized cold starts and 90-120s API timeouts for long-form generation
 
 ---
 
@@ -134,26 +155,6 @@ The public-facing **Social Agent** and the autonomous **AI Black Box** are power
   <img src="web/static/architecture-mindmap.png" width="700" alt="Architecture Mindmap">
   <br><em>Leges Architecture Mindmap</em>
 </p>
-
----
-
-## 🤖 Agent Integration & Model Optimization
-
-### Multi-Agent Coordination
-
-Each Agent independently calls the Deepseek LLM via structured prompt engineering:
-
-- **Search Agent**: 384-dim vector embeddings for semantic retrieval; auto-translates Chinese queries to English
-- **Generate Agent**: Three-part prompts (role + task + format constraints) with Standard/Detailed/Simple output levels
-- **Analysis Agent**: Three-stage quantitative simulation (chart analysis + party analysis + overall pass rate), structured output for prediction charts and assessment reports
-- **Social Agent**: 6 template angles (problem-solution, hot topic, journey story, community, goal progress, urgency); platform tone guides injected as system prompts
-- **Black Box**: 25 AI policy topics in a rotating pool; 3-6 second intervals for unsupervised autonomous generation
-
-### Optimization
-
-- Precise prompt engineering (role setting, output format, language enforcement) reduces hallucinations
-- Language isolation: English/Chinese modes each have forced language directives to prevent code-switching
-- Vercel serverless deployment with optimized cold starts and 90-120s API timeouts for long-form generation
 
 ---
 
