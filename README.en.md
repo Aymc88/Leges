@@ -113,19 +113,18 @@ The public-facing **Social Agent** and the autonomous **AI Black Box** are power
 </p>
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                     Web UI (HTML+JS)                     │
-├─────────────────────────────────────────────────────────┤
-│                   FastAPI Backend                        │
-├──────────┬──────────┬──────────┬──────────┬─────────────┤
-│  Search  │ Generate │ Analysis │  Social  │  Black Box  │
-│  Agent   │  Agent   │  Agent   │  Agent   │   (Auto)    │
-├──────────┴──────────┴──────────┴──────────┴─────────────┤
-│              Deepseek API (Anthropic-compatible)         │
-├─────────────────────────────────────────────────────────┤
-│    Legislative Corpora (Hong Kong / Macau / California)    │
-│    Vector Embedding Search (384-dim + cosine similarity) │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                            Web UI (HTML+JS)                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                             FastAPI Backend                             │
+├────────────┬────────────┬────────────┬────────────┬─────────────────────┤
+│   Search   │  Generate  │  Analysis  │   Social   │ AI Black Box (Auto) │
+├────────────┴────────────┴────────────┴────────────┴─────────────────────┤
+│                   Deepseek API (Anthropic-compatible)                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│          Legislative Corpora (Hong Kong / Macau / California)           │
+│              384-dim Vector Embeddings + Cosine Similarity              │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Multi-Agent Collaboration
