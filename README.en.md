@@ -50,6 +50,61 @@ Empowering ordinary people to participate in the legislative process — search 
 
 ---
 
+## 🎬 Complete Feature Tour
+
+From a personal concern to a city-wide petition, Leges builds a complete legislative participation chain.
+
+### Step 1: Search — Cross-Jurisdictional Precedent Retrieval
+
+Enter a topic in the dashboard search to retrieve relevant past bills. Then use the **Search Agent** for deeper cross-jurisdictional search — focus on a specific region (CA/HK/MO) or search across all jurisdictions at once. The system returns precise bill counts and detailed lists.
+
+### Step 2: Generate — AI Drafting + Legislator Matching + Petition
+
+The **Generate Agent** lets you draft professional bills from a topic. Three tailored length modes — **Standard**, **Detailed**, and **Simple**. Pick a mode, click generate, and moments later a tightly-formatted bill with complete legal provisions appears.
+
+It also includes two core subagents:
+
+- **Legislator Match Subagent**: Automatically searches historical proposal data to match legislators who have supported similar bills and may support yours
+- **Petition Subagent**: One-click petition launch to collect public signatures, with real-time display of the latest signatories
+
+From bill drafting to legislator lobbying to public opinion gathering — a complete closed loop.
+
+### Step 3: Analysis — Pass Rate Simulation
+
+The **Analysis Agent** runs quantitative pass-rate simulations. Click analyze and the system generates intuitive prediction charts showing each **party's** projected support rate. The built-in **Party Analysis Subagent** dissects each party's voting tendencies. Beyond party breakdown, the system evaluates the **overall pass rate** and outputs a detailed report pinpointing the bill's core strengths and potential obstacles.
+
+### Step 4: Social — Amplify Impact
+
+The **Social Agent** automatically sets signature targets and comes with six copywriting templates. By injecting platform-specific tone guidelines as system prompts, the AI generates promotional content adapted for different social platforms — whether visual-focused Instagram or influencer-style Xiaohongshu (RedNote). The complete loop from individual civic concern to city-wide engagement is achieved.
+
+### Step 5: AI Black Box — 24/7 Autonomous Legislation
+
+At the heart of the platform: the **AI Black Box**. Here, an AI-driven autonomous legislation flow operates 24/7, tirelessly detecting emerging tech vulnerabilities and continuously generating new bill drafts — with zero human input required. The system autonomously evolves and generates complete bills, integrating them in real-time with fresh timestamps.
+
+---
+
+## 🤖 Dual-Engine Architecture
+
+The public-facing **Social Agent** and the autonomous **AI Black Box** are powered by **StepFun 阶跃星辰** models. The legally rigorous **Search**, **Generate**, and **Analysis Agents** are fully integrated with **Deepseek** models. A dual-engine powerhouse, backed by the full-stack compute capability of **NVIDIA DGX Spark**, that makes Leges' full automation possible.
+
+---
+
+## ✅ Five Problems Solved
+
+Leges addresses the five critical problems of global AI legislation:
+
+| # | Problem | Solution |
+|---|---------|----------|
+| 1 | Governments don't know where to start | One-click legislative templates — anyone can draft professional bills |
+| 2 | Bill language is a barrier | Clear cross-jurisdictional search results — no language barriers |
+| 3 | Cross-jurisdictional silos | Tri-jurisdiction unified search breaks information silos |
+| 4 | Reactive, not proactive | AI Black Box proposes bills 24/7, proactively |
+| 5 | AI policy can't be insider-only | Search→Draft→Analyze→Petition→Social — city-wide civic engagement |
+
+In the AI era, AI should legislate for AI. Let AI safeguard the future of legislation.
+
+---
+
 ## 🏗️ Architecture
 
 ```
