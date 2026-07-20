@@ -95,6 +95,16 @@ The **Social Agent** automatically sets signature targets and comes with six cop
 
 At the heart of the platform: the **AI Black Box**. Here, an AI-driven autonomous legislation flow operates 24/7, tirelessly detecting emerging tech vulnerabilities and continuously generating new bill drafts — with zero human input required. The system autonomously evolves and generates complete bills, integrating them in real-time with fresh timestamps.
 
+In summary:
+
+| Agent | Role | Input → Output |
+|-------|------|---------------|
+| 🔍 Search | Bill retrieval | Natural language → Similar bills with relevance scores |
+| ✎ Generate | Bill drafting | Topic + style → Full draft + legislator recommendations + petition |
+| 📊 Analysis | Pass rate prediction | Bill topic → Pass rate % + party breakdown + chart |
+| 📣 Social | Social campaign | Bill info → Platform-adapted posts with petition CTA |
+| 📦 AI Black Box | Autonomous legislation | No input → Continuous AI bill generation |
+
 ---
 
 ## 🤖 Dual-Engine Architecture
@@ -124,16 +134,6 @@ The public-facing **Social Agent** and the autonomous **AI Black Box** are power
   <img src="web/static/architecture-mindmap.png" width="700" alt="Architecture Mindmap">
   <br><em>Leges Architecture Mindmap</em>
 </p>
-
-### Multi-Agent Collaboration
-
-| Agent | Role | Input → Output |
-|-------|------|---------------|
-| 🔍 Search | Bill retrieval | Natural language → Similar bills with relevance scores |
-| ✎ Generate | Bill drafting | Topic + style → Full draft + legislator recommendations + petition |
-| 📊 Analysis | Pass rate prediction | Bill topic → Pass rate % + party breakdown + chart |
-| 📣 Social | Social campaign | Bill info → Platform-adapted posts with petition CTA |
-| 📦 Black Box | Autonomous legislation | No input → Continuous AI bill generation |
 
 ---
 

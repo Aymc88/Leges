@@ -9,7 +9,6 @@
 > **AI 帮 AI 立法 —— 让机器 24 小时不停为机器起草法案**
 
 ---
-
 ## 📖 缘起
 
 随着AI科技日新月异，AI 立法正在全球范围内加速。为美国加州州众议员实习期间，我发现了一个人民生成法案的缝隙：
@@ -27,7 +26,6 @@
 为了寻找答案，我做了一个小律提案。
 
 ---
-
 ## 🎯 解决的五个问题
 
 小律提案恰恰解决了全球 AI 立法的五大痛点：
@@ -41,7 +39,6 @@
 | 5 | 立法不能只靠内部人 | 搜索→起草→分析→请愿→社媒活动，让全网市民联动 |
 
 ---
-
 ## ✨ 核心亮点
 
 ### 1. 人机双轨立法 —— Human + Autonomous 双模式
@@ -61,7 +58,6 @@
 让普通人也能参与立法过程——搜索先例、生成草案、分析成功率、发起请愿、社媒活动推广，每一步都有 AI 辅助。
 
 ---
-
 ## 🎬 完整功能巡礼
 
 从个人诉求到全网联署，小律提案构建了一条完整的立法参与链。
@@ -108,16 +104,12 @@
 | 📦 AI黑盒 | 自主立法 | 无输入 → 不间断生成 AI 法案（随机主题/法域） |
 
 ---
-
 ## 🤖 双引擎驱动
 
 面向公众的 **社媒活动 Agent** 以及自主运作的 **AI黑盒**，由 **StepFun 阶跃星辰** 模型驱动；而涉及严谨法律条文的 **搜索**、**生成** 与 **分析 Agent**，则全面接入 **Deepseek** 模型。双引擎强强联手，再加上 **NVIDIA DGX Spark** 的全栈算力支持，才真正实现了小律提案的全面自动化。
 
 ---
-
-
 ---
-
 ## 🏗️ 架构设计
 
 <p align="center">
@@ -133,10 +125,12 @@
 | 🧠 AI 引擎 | Deepseek API (Anthropic-compatible) |
 | 📚 数据 | Legislative Corpora（香港 / 澳门 / 美国加州）+ 384 维向量嵌入检索 |
 
-
+<p align="center">
+  <img src="web/static/architecture-mindmap.png" width="700" alt="Architecture Mindmap">
+  <br><em>小律提案架构思维导图</em>
+</p>
 
 ---
-
 ## 🤖 智能体融合与模型优化
 
 ### 多智能体协同机制
@@ -156,7 +150,6 @@
 - 使用 Vercel 无服务器部署，冷启动优化，API 超时 90-120 秒适配长文本生成
 
 ---
-
 ## 🛠️ 技术栈
 
 | 层 | 技术 | 说明 |
@@ -175,7 +168,6 @@
 - **Deepseek v4**：通过 Anthropic 兼容接口驱动 AI 推理
 
 ---
-
 ## ⚡ 部署说明
 
 ### 本地（DGX Spark）部署
@@ -212,7 +204,6 @@ npm_config_cache=/tmp/npm-cache npx vercel --name leges-app --prod
 ```
 
 ---
-
 ## 📁 项目结构
 
 ```
@@ -233,7 +224,6 @@ npm_config_cache=/tmp/npm-cache npx vercel --name leges-app --prod
 ```
 
 ---
-
 ## 🎯 评审标准对应
 
 | 标准 | 权重 | 本项目对应 |
@@ -246,7 +236,6 @@ npm_config_cache=/tmp/npm-cache npx vercel --name leges-app --prod
 | 赛事征文 | 5% | "十日谈"开发历程记录 |
 
 ---
-
 ## 🔮 未来路线图
 
 - **自动更新**：AI黑盒 24/7 全年无休运作，持续为 AI 快速提案
@@ -255,29 +244,24 @@ npm_config_cache=/tmp/npm-cache npx vercel --name leges-app --prod
 - **多 API 接入**：接入更多 LLM API（社媒活动 Agent 和 AI黑盒 已使用 StepFun）
 
 ---
-
 ## 🎨 设计系统
 
 配色与组件规范详见 [DESIGN.md](DESIGN.md)。
 
 ---
-
 ## 👥 团队
 
 *（此处置入团队合影）*
 
 ---
-
 ## 📹 演示视频
 
 *（此处链接演示视频）*
 
 ---
-
 ## 📄 开源
 
 本项目已开源。欢迎提交 Issue 和 PR。
 
 ---
-
 *为 DGX Spark Hackathon 2026 打造 · 「十日谈」开发历程记录*
