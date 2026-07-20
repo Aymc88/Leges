@@ -10,7 +10,7 @@
 
 ## 📖 Origin
 
-AI legislation is accelerating worldwide, but governments don't know where to start. During my internship with a California State Assemblymember, I discovered a gap in the legislative process:
+AI technology is advancing at breakneck speed, and AI legislation is accelerating worldwide. During my internship with a California State Assemblymember, I discovered a gap in the legislative process:
 
 One — no roadmap: AI legislation races ahead with no playbook for lawmakers.
 Two — language barrier: ordinary people can't read, let alone write, a bill.
