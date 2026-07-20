@@ -204,16 +204,6 @@ npm_config_cache=/tmp/npm-cache npx vercel --name leges-app --prod
 
 ---
 
-## 🎯 Judging Criteria
-
-| Criterion | Weight | Our Approach |
-|-----------|--------|-------------|
-| Practicality, Industry Value & Innovation | 25% | AI legislation fills a real gap; dual-mode (human/auto) innovation; cross-jurisdictional institutional spectrum framework |
-| Agent Integration & Model Optimization | 25% | 5 Agents in collaboration; structured prompt engineering; vector semantic search; 24/7 autonomous generation |
-| Project Completeness | 20% | Full frontend + backend; all 5 Agents functional; i18n bilingual; comprehensive documentation |
-| Platform Adaptation | 15% | DGX Spark full-stack; NVIDIA SDK + Stepfun model integration |
-| Demo Quality | 10% | Video showcasing all 5 Agents + Black Box end-to-end |
-| Written Record | 5% | "Ten Days Talk" development journey |
 
 ---
 
