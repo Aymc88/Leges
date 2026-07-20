@@ -122,14 +122,6 @@ Each Agent independently calls the Deepseek LLM via structured prompt engineerin
 
 ---
 
-## ⚡ Model Optimization
-
-- Precise prompt engineering (role setting, output format, language enforcement) reduces hallucinations
-- Language isolation: English/Chinese modes each have forced language directives to prevent code-switching
-- Vercel serverless deployment with optimized cold starts and 90-120s API timeouts for long-form generation
-
----
-
 ## 🤖 Dual-Engine Architecture
 
 The public-facing **Social Agent** and the autonomous **AI Black Box** are powered by **StepFun 阶跃星辰** models. The legally rigorous **Search**, **Generate**, and **Analysis Agents** are fully integrated with **Deepseek** models. A dual-engine powerhouse, backed by the full-stack compute capability of **NVIDIA DGX Spark**, that makes Leges' full automation possible.
@@ -159,6 +151,15 @@ The public-facing **Social Agent** and the autonomous **AI Black Box** are power
 </p>
 
 ---
+
+## ⚡ Model Optimization
+
+- Precise prompt engineering (role setting, output format, language enforcement) reduces hallucinations
+- Language isolation: English/Chinese modes each have forced language directives to prevent code-switching
+- Vercel serverless deployment with optimized cold starts and 90-120s API timeouts for long-form generation
+
+---
+
 
 ## 🛠️ Tech Stack
 
