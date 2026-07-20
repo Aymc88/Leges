@@ -111,7 +111,7 @@ def api_search(body: SearchRequest):
         if not query.isascii():
             try:
                 import httpx, os
-                api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
+                api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN")
                 base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
                 model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
                 if api_key:
@@ -192,7 +192,7 @@ class SocialPublishRequest(BaseModel):
 def api_generate(body: GenerateRequest):
     try:
         import httpx, os
-        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN")
         base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
         model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
         if not api_key:
@@ -282,7 +282,7 @@ def _build_social_platform_prompt(lang: str) -> str:
 def api_social_generate(body: SocialPostRequest):
     try:
         import httpx, os, json
-        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN")
         base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
         model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
         lang = body.lang
@@ -475,7 +475,7 @@ class BlackBoxRequest(BaseModel):
 def api_blackbox_generate(body: BlackBoxRequest):
     try:
         import httpx, os, random, json, re, time
-        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN")
         base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
         model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
 
@@ -554,7 +554,7 @@ class LegislatorRequest(BaseModel):
 def api_legislators(body: LegislatorRequest):
     try:
         import httpx, json, re, os
-        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN")
         base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
         model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
         jn = {"CA":"California","HK":"Hong Kong","MO":"Macau"}
@@ -618,7 +618,7 @@ def api_translate(body: TranslateRequest):
     """批量翻译英文法案标题为中文。"""
     try:
         import httpx, os
-        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN") or "sk-255ecb50a0f84c15b3a6d56fe5269cf0"
+        api_key = os.environ.get("ANTHROPIC_AUTH_TOKEN")
         base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.deepseek.com/anthropic")
         model = os.environ.get("ANTHROPIC_MODEL", "deepseek-v4-flash")
         texts = body.texts[:20]

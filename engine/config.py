@@ -38,8 +38,7 @@ Role = Literal[
 # ══════════════════════════════════════════════════════════
 # API 来源
 # ══════════════════════════════════════════════════════════
-# Stepfun API
-#   Key: 5plZ7faKxLk2iPZkyV6Re7wuLUwxVO6LyzWi3pO86eu5Wf4aILWQQQiOJjJTk0QQp
+# Stepfun API — 通过环境变量 STEPFUN_API_KEY 注入
 
 # ══════════════════════════════════════════════════════════
 # 语言
