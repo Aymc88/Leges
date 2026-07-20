@@ -172,9 +172,9 @@ Each Agent independently calls the Deepseek LLM via structured prompt engineerin
 
 ## ⚡ Deployment
 
-Live on **Vercel** → [leges-mcp.vercel.app](https://leges-mcp.vercel.app)
-
 Early development was done locally on **DGX Spark** using `uvicorn web.routes:app --host 0.0.0.0 --port 8000`.
+
+Now live on **Vercel** → [leges-mcp.vercel.app](https://leges-mcp.vercel.app)
 
 ---
 

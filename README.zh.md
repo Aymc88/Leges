@@ -162,9 +162,9 @@
 ---
 ## ⚡ 部署
 
-本项目已在 **Vercel** 上线 → [leges-mcp.vercel.app](https://leges-mcp.vercel.app)
-
 早期开发阶段在 **DGX Spark** 本地部署运行，使用 `uvicorn web.routes:app --host 0.0.0.0 --port 8000` 本地调试。
+
+现已上线 **Vercel** → [leges-mcp.vercel.app](https://leges-mcp.vercel.app)
 
 ---
 ## 📁 项目结构
