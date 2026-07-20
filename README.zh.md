@@ -164,36 +164,9 @@
 - **Deepseek v4**：通过 Anthropic 兼容接口驱动 AI 推理
 
 ---
-## ⚡ 部署说明
+## ⚡ 部署
 
-### 本地（DGX Spark）部署
-
-```bash
-# 1. 克隆仓库
-git clone https://github.com/your-username/leges.git
-cd leges
-
-# 2. 安装依赖
-pip install -r requirements.txt
-
-# 3. 配置环境变量
-export ANTHROPIC_AUTH_TOKEN="your-api-key"
-export ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
-export ANTHROPIC_MODEL="deepseek-v4-flash"
-
-# 4. 启动本地服务
-uvicorn web.routes:app --host 0.0.0.0 --port 8000
-
-# 5. 访问 http://localhost:8000
-```
-
-### 大模型优化
-
-- 利用 DGX Spark 本地算力进行 Prompt 模板缓存，减少重复 API 调用
-- 向量嵌入文件（`data/embeddings.npy`）预计算后加载，无需实时推理
-- API 调用使用连接复用（httpx Client），减少握手开销
-
-### Vercel 部署
+本项目已在 **Vercel** 上线，可直接访问使用。
 
 ```bash
 npm_config_cache=/tmp/npm-cache npx vercel --name leges-app --prod

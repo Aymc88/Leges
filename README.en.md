@@ -175,34 +175,7 @@ Each Agent independently calls the Deepseek LLM via structured prompt engineerin
 
 ## ⚡ Deployment
 
-### Local (DGX Spark)
-
-```bash
-# 1. Clone
-git clone https://github.com/your-username/leges.git
-cd leges
-
-# 2. Install
-pip install -r requirements.txt
-
-# 3. Configure
-export ANTHROPIC_AUTH_TOKEN="your-api-key"
-export ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
-export ANTHROPIC_MODEL="deepseek-v4-flash"
-
-# 4. Launch
-uvicorn web.routes:app --host 0.0.0.0 --port 8000
-
-# 5. Open http://localhost:8000
-```
-
-### LLM Optimization on DGX Spark
-
-- Prompt template caching reduces redundant API calls
-- Pre-computed vector embeddings (`data/embeddings.npy`) loaded at startup — no real-time inference needed
-- HTTP connection reuse (httpx Client) minimizes handshake overhead
-
-### Vercel Deployment
+This project is live on **Vercel** — visit the link to use it directly.
 
 ```bash
 npm_config_cache=/tmp/npm-cache npx vercel --name leges-app --prod
