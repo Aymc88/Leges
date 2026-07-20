@@ -242,7 +242,3 @@ We are a lean, high-efficiency team of two, covering full-stack development, AI 
 ## 📄 Open Source
 
 This project is open source. Issues and PRs welcome.
-
----
-
-*Built for DGX Spark Hackathon 2026 · "Ten Days Talk" Development Chronicle*
