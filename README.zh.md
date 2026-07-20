@@ -4,7 +4,7 @@
   <img src="logo.png?v=2" width="60%" alt="Leges Logo">
 </p>
 
-### Leges: 一步一法
+### 小律提案 · 一步一法
 
 > **AI 帮 AI 立法 —— 让机器 24 小时不停为机器起草法案**
 
