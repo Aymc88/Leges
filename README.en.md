@@ -139,7 +139,7 @@ Each Agent independently calls the Deepseek LLM via structured prompt engineerin
 | 🖥️ Frontend | Web UI (HTML+JS) |
 | ⚙️ Backend | FastAPI |
 | 🤖 Agents | 🔍 Search · ✎ Generate · 📊 Analysis · 📣 Social · 📦 AI Black Box |
-| 🧠 AI Engine | Deepseek API (Anthropic-compatible) |
+| 🧠 AI Engine | Deepseek API (Anthropic-compatible), StepFun, NVIDIA SDK: DGX Spark full-stack capability |
 | 📚 Data | Legislative Corpora (Hong Kong / Macau / California) + 384-dim Vector Embeddings |
 
 <p align="center">
