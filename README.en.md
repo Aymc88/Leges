@@ -219,7 +219,17 @@ Full color palette and component specs in [DESIGN.md](DESIGN.md).
 
 ## 👥 Team
 
-*(Team photo goes here)*
+**Team Contribution**  
+We are a lean, high-efficiency team of two, covering full-stack development, AI engineering, media operations, and user experience —分工清晰,闭环敏捷.
+
+**Amanda Chen — Team Lead / Full-Stack & Architecture Engineer**  
+- **Background**: During her internship with a California State Assemblymember, team lead Amanda experienced first-hand the challenges of AI legislation and identified five critical gaps in citizen bill-generation. These pain points drove her to build a tool that lets everyone participate in the legislative process — "AI legislating for AI."  
+- **Role**: Leads overall technical architecture and implementation, responsible for Multi-Agent system design, model ecosystem integration, backend development, and system performance optimization.  
+- **Contributions**: Independently architected and implemented all 5 agents (Search · Generate · Analysis · Social · AI Black Box), built the FastAPI backend and vector search engine (384-dim semantic embeddings); integrated dual engines — Deepseek (Anthropic-compatible API) and StepFun 阶跃星辰 — with structured prompt engineering (role setting + task description + format constraints) for specialized task delegation, and implemented three-stage quantitative pass-rate simulation. Also designed the serverless deployment architecture, optimizing API calls and token consumption for low-latency concurrent performance.
+
+**Connie Chen — Media & Product Operations Manager**  
+- **Role**: User research, product experience design, frontend interaction development, text and video content production, full-process documentation and branding.  
+- **Contributions**: Led "Leges" MVP design from 0 to 1, developed the complete Web UI (HTML+JS) and interaction testing; built the cross-jurisdictional legislative corpus (Hong Kong / Macau / California), cleaned and structured bill metadata and vector embedding datasets; produced the demo video and "Ten Days Talk" development chronicle showcasing all 5 agents + AI Black Box end-to-end; managed the Leges brand identity (Logo, design system) and social media content strategy, ensuring consistent communication of the "One lex at a time" vision.
 
 ---
 
