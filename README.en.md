@@ -112,20 +112,13 @@ The public-facing **Social Agent** and the autonomous **AI Black Box** are power
   <img src="web/static/architecture.png" width="700" alt="Architecture Diagram">
 </p>
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                            Web UI (HTML+JS)                             │
-├─────────────────────────────────────────────────────────────────────────┤
-│                             FastAPI Backend                             │
-├────────────┬────────────┬────────────┬────────────┬─────────────────────┤
-│   Search   │  Generate  │  Analysis  │   Social   │ AI Black Box (Auto) │
-├────────────┴────────────┴────────────┴────────────┴─────────────────────┤
-│                   Deepseek API (Anthropic-compatible)                   │
-├─────────────────────────────────────────────────────────────────────────┤
-│          Legislative Corpora (Hong Kong / Macau / California)           │
-│              384-dim Vector Embeddings + Cosine Similarity              │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+| Layer | Technology |
+|-------|-----------|
+| 🖥️ Frontend | Web UI (HTML+JS) |
+| ⚙️ Backend | FastAPI |
+| 🤖 Agents | 🔍 Search · ✎ Generate · 📊 Analysis · 📣 Social · 📦 AI Black Box |
+| 🧠 AI Engine | Deepseek API (Anthropic-compatible) |
+| 📚 Data | Legislative Corpora (Hong Kong / Macau / California) + 384-dim Vector Embeddings |
 
 <p align="center">
   <img src="web/static/architecture-mindmap.png" width="700" alt="Architecture Mindmap">
