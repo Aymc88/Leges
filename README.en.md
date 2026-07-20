@@ -1,5 +1,9 @@
 # Leges: One lex at a time
 
+<p align="center">
+  <img src="logo.png?v=2" width="120" alt="Leges Logo">
+</p>
+
 ### AI legislating for AI — machines drafting laws for machines, 24/7
 
 ---
