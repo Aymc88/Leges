@@ -120,7 +120,11 @@ Each Agent independently calls the Deepseek LLM via structured prompt engineerin
 - **Social Agent**: 6 template angles (problem-solution, hot topic, journey story, community, goal progress, urgency); platform tone guides injected as system prompts
 - **Black Box**: 25 AI policy topics in a rotating pool; 3-6 second intervals for unsupervised autonomous generation
 
----
+### Optimization
+
+- Precise prompt engineering (role setting, output format, language enforcement) reduces hallucinations
+- Language isolation: English/Chinese modes each have forced language directives to prevent code-switching
+- Vercel serverless deployment with optimized cold starts and 90-120s API timeouts for long-form generation
 
 ---
 
@@ -145,13 +149,6 @@ Each Agent independently calls the Deepseek LLM via structured prompt engineerin
 
 ---
 
-## ⚡ Model Optimization
-
-- Precise prompt engineering (role setting, output format, language enforcement) reduces hallucinations
-- Language isolation: English/Chinese modes each have forced language directives to prevent code-switching
-- Vercel serverless deployment with optimized cold starts and 90-120s API timeouts for long-form generation
-
----
 
 
 ## 🛠️ Tech Stack
