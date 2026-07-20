@@ -148,6 +148,7 @@ Each Agent independently calls the Deepseek LLM via structured prompt engineerin
 
 - **Search Agent**: 384-dim vector embeddings for semantic retrieval; auto-translates Chinese queries to English
 - **Generate Agent**: Three-part prompts (role + task + format constraints) with Standard/Detailed/Simple output levels
+- **Analysis Agent**: Three-stage quantitative simulation (chart analysis + party analysis + overall pass rate), structured output for prediction charts and assessment reports
 - **Social Agent**: 6 template angles (problem-solution, hot topic, journey story, community, goal progress, urgency); platform tone guides injected as system prompts
 - **Black Box**: 25 AI policy topics in a rotating pool; 3-6 second intervals for unsupervised autonomous generation
 
