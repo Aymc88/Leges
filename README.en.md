@@ -10,7 +10,7 @@
 
 ## 📖 Origin
 
-AI technology is advancing at breakneck speed, and AI legislation is accelerating worldwide. During my internship with a California State Assemblymember, I discovered a gap in the legislative process:
+AI technology is advancing at breakneck speed, and AI legislation is accelerating worldwide. During her internship with a California State Assemblymember, team lead Amanda experienced first-hand the challenges of AI legislation and discovered a gap in the legislative process:
 
 |   | Problem | Reality |
 |---|---------|---------|
