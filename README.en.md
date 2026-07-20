@@ -10,19 +10,15 @@
 
 ## 📖 Origin
 
-AI legislation is accelerating worldwide, but the old legislative process can't keep up.
+AI legislation is accelerating worldwide, but governments don't know where to start. During my internship with a California State Assemblymember, I discovered a gap in the legislative process:
 
-First, governments don't know where to start in the rush to regulate AI.
+One — no roadmap: AI legislation races ahead with no playbook for lawmakers.
+Two — language barrier: ordinary people can't read, let alone write, a bill.
+Three — cross-jurisdictional silos: no tools exist to compare laws across regions.
+Four — reactive, not proactive: governments only act after a crisis hits.
+Five — insider-only: the people most affected have no seat at the table.
 
-Second, bill language is a barrier — ordinary people simply can't understand it.
-
-Third, cross-jurisdictional information silos exist, with no tools to compare across legal systems.
-
-Fourth, legislation is reactive, not proactive — governments only act after a crisis.
-
-Fifth, AI legislation can't be made by insiders alone, leaving the affected voiceless.
-
-During my internship with a California State Assemblymember, I discovered a gap in the legislative process: the language of bills is too complex, the barrier too high for ordinary people to participate. Can AI legislation be made participatory and proactive for everyone?
+The language of bills is too complex, the barrier too high for ordinary people to participate.
 
 Can AI legislate for AI?
 
