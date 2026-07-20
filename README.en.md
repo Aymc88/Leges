@@ -108,6 +108,10 @@ The public-facing **Social Agent** and the autonomous **AI Black Box** are power
 
 ## 🏗️ Architecture
 
+<p align="center">
+  <img src="web/static/architecture.png" width="700" alt="Architecture Diagram">
+</p>
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                     Web UI (HTML+JS)                     │
