@@ -147,11 +147,6 @@
 | 🧠 AI 引擎 | Deepseek API (Anthropic-compatible) |
 | 📚 数据 | Legislative Corpora（香港 / 澳门 / 美国加州）+ 384 维向量嵌入检索 |
 
-<p align="center">
-  <img src="web/static/architecture-mindmap.png" width="700" alt="Architecture Mindmap">
-  <br><em>小律提案架构思维导图</em>
-</p>
-
 ---
 ## 🛠️ 技术栈
 
