@@ -144,8 +144,8 @@
 
 ## 🛠️ 技术栈
 
-| 层 | 技术 | 说明 |
-|-------|------|------|
+| 分层 | 技术 | 说明 |
+|--------|------|------|
 | 后端框架 | Python / FastAPI | 轻量异步 Web 框架 |
 | 前端 | 静态 HTML + Vanilla JS | 零依赖，直出渲染 |
 | AI 推理 | Deepseek（Anthropic 兼容 API）+ StepFun | 社媒活动 Agent 与 AI黑盒由 StepFun 驱动；搜索、生成与分析 Agent 接入 Deepseek。双引擎联手 NVIDIA DGX Spark，实现全面自动化 |
