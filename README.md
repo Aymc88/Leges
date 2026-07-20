@@ -1,4 +1,4 @@
-# 小律提案：AI为AI立法 · Leges: One lex at a time
+# 小律提案：AI为AI立法 · Leges: 一步一法
 
 <p align="center">
   <img src="logo.png?v=2" width="60%" alt="Leges Logo">
