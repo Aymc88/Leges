@@ -28,13 +28,15 @@ To answer that, I built **Leges**.
 
 ## 🎯 Five Problems — Five Solutions
 
+Leges addresses the five critical problems of global AI legislation:
+
 | # | Problem | Solution |
 |---|---------|----------|
-| 1 | **Governments don't know where to start** — AI legislation is accelerating with no playbook | **Search Agent**: Cross-jurisdictional search across thousands of bills — legislators stand on giants' shoulders |
-| 2 | **Bill language is a barrier** — Ordinary people can't read or write legislation | **Generate Agent**: Input a topic, get a professional bill draft in 3 levels of detail |
-| 3 | **Cross-jurisdictional silos** — Hong Kong, Macau, California each figuring it out alone | **Tri-jurisdiction fusion**: Unified search across Hong Kong, Macau, and California data |
-| 4 | **Reactive, not proactive** — Legislators only act after a crisis | **Black Box**: 24/7 autonomous AI bill generation — turning reactive into proactive |
-| 5 | **AI policy can't be insider-only** — The affected have no voice | **Full participation chain**: Search → Draft → Analyze → Petition → Social — for everyone |
+| 1 | Governments don't know where to start | One-click legislative templates — anyone can draft professional bills |
+| 2 | Bill language is a barrier | Clear cross-jurisdictional search results — no language barriers |
+| 3 | Cross-jurisdictional silos | Tri-jurisdiction unified search breaks information silos |
+| 4 | Reactive, not proactive | AI Black Box proposes bills 24/7, proactively |
+| 5 | AI policy can't be insider-only | Search→Draft→Analyze→Petition→Social — city-wide civic engagement |
 
 ---
 
@@ -101,19 +103,6 @@ The public-facing **Social Agent** and the autonomous **AI Black Box** are power
 
 ---
 
-## ✅ Five Problems Solved
-
-Leges addresses the five critical problems of global AI legislation:
-
-| # | Problem | Solution |
-|---|---------|----------|
-| 1 | Governments don't know where to start | One-click legislative templates — anyone can draft professional bills |
-| 2 | Bill language is a barrier | Clear cross-jurisdictional search results — no language barriers |
-| 3 | Cross-jurisdictional silos | Tri-jurisdiction unified search breaks information silos |
-| 4 | Reactive, not proactive | AI Black Box proposes bills 24/7, proactively |
-| 5 | AI policy can't be insider-only | Search→Draft→Analyze→Petition→Social — city-wide civic engagement |
-
-In the AI era, AI should legislate for AI. Let AI safeguard the future of legislation.
 
 ---
 
