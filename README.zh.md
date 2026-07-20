@@ -124,7 +124,7 @@
 
 <p align="center">
   <img src="web/static/architecture-mindmap.png" width="700" alt="Architecture Mindmap">
-  <br><em>小律提案架构思维导图 (Mindmap)</em>
+  <br><em>小律提案架构思维导图</em>
 </p>
 
 ### 多智能体协同
