@@ -79,7 +79,11 @@ From bill drafting to legislator lobbying to public opinion gathering — a comp
 
 ### Step 3: Analysis — Pass Rate Simulation
 
-The **Analysis Agent** runs quantitative pass-rate simulations. Click analyze and the system generates intuitive prediction charts showing each **party's** projected support rate. The built-in **Party Analysis Subagent** dissects each party's voting tendencies. Beyond party breakdown, the system evaluates the **overall pass rate** and outputs a detailed report pinpointing the bill's core strengths and potential obstacles.
+The **Analysis Agent** runs quantitative pass-rate simulations with three core subagents:
+
+- **Chart Analysis Subagent**: Generates intuitive prediction charts showing each party's projected support rate
+- **Party Analysis Subagent**: Dissects each party's voting tendencies and stance breakdown
+- **Overall Pass Rate Subagent**: Evaluates the overall pass rate and outputs a detailed report pinpointing the bill's core strengths and potential obstacles
 
 ### Step 4: Social — Amplify Impact
 
