@@ -137,7 +137,7 @@
 | 🖥️ 前端 | Web UI (HTML+JS) |
 | ⚙️ 后端 | FastAPI |
 | 🤖 智能体 | 🔍 搜索 · ✎ 生成 · 📊 分析 · 📣 社媒活动 · 📦 AI 黑盒 |
-| 🧠 AI 引擎 | Deepseek API (Anthropic-compatible) |
+| 🧠 AI 引擎 | Deepseek（Anthropic 兼容 API） |
 | 📚 数据 | Legislative Corpora（香港 / 澳门 / 美国加州）+ 384 维向量嵌入检索 |
 
 ---
